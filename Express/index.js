@@ -14,19 +14,49 @@ async function getDBConnection() {
     return db;
 }
 
-async function getAllProducts() {
+async function getAllProducts(req, res) {
     let db = await getDBConnection();
     let products = await db.all('SELECT * FROM Products');
     await db.close();
     return res.json(products);
 }
 
-async function getProductsByBrandType(brand, type) {
+async function getProductsByConditions(req, res) {
+    const { brand, console, productType } = req.query;
+    
+    let db = await getDBConnection();
 
+    let query = 'SELECT * FROM Products';
+    let conditions = [];
+    let params = [];
+
+    if (brand) {
+        conditions.push('brand = ?');
+        params.push(brand);
+    }
+    if (console) {
+        conditions.push('console = ?');
+        params.push(console);
+    }
+    if (productType) {
+        conditions.push('productType = ?');
+        params.push(productType);
+    }
+
+    if (conditions.length) {
+        query += ' WHERE ' + conditions.join(' AND ');
+    }
+
+    let products = await db.all(query, params);
+    await db.close()
+    return res.json(products)
 }
 
+
+
 app.get('/products', async function (req, res){
-    return getAllProducts()
+    //return getAllProducts(req, res)
+    return getProductsByConditions(req, res);
 })
 
 app.get('/products/Nintendo', async function (req, res){
@@ -35,6 +65,8 @@ app.get('/products/Nintendo', async function (req, res){
     await db.close();
     return res.json(products);
 })
+
+//Old routes
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
@@ -93,6 +125,8 @@ app.delete('/items/:id', async (req, res) => {
         res.status(404).json({message: 'Item not found'})
     }
 })
+
+//Running
 
 app.use((req, res, next) => {
     if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
