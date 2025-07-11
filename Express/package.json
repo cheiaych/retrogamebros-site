@@ -1,0 +1,21 @@
+{
+  "name": "retro-game-bros-express",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-and-start": "npm run build --prefix ../React && npm start --prefix ./"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
+    "express": "^4.19.2",
+    "react-router-dom": "^6.23.1",
+    "sequelize": "^6.37.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
