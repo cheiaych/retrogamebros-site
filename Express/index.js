@@ -22,7 +22,11 @@ async function getAllProducts(req, res) {
 }
 
 async function getProductsByConditions(req, res) {
-    const { brand, console, productType } = req.query;
+    //const { brand, console, productType } = req.query;
+
+    const brand = sanitizeInput(req.query.brand);
+    const console = sanitizeInput(req.query.console);
+    const productType = sanitizeInput(req.query.productType)
     
     let db = await getDBConnection();
 
@@ -52,101 +56,34 @@ async function getProductsByConditions(req, res) {
     return res.json(products)
 }
 
+function sanitizeInput(input, maxLength = 100) {
+    if (typeof input !== 'string') return '';
+    input = input.trim();
+    if (input.length > maxLength) return '';
+    return input;
+}
 
-
-app.get('/products', async function (req, res){
+app.get('/api/products', async function (req, res){
     //return getAllProducts(req, res)
     return getProductsByConditions(req, res);
 })
 
-app.get('/products/Nintendo', async function (req, res){
+app.get('/api/products/Nintendo', async function (req, res){
     let db = await getDBConnection();
     let products = await db.all('SELECT * FROM Products WHERE brand = "Nintendo"');
     await db.close();
     return res.json(products);
 })
 
-//Old routes
-
-const sequelize =  new Sequelize({
-    dialect: 'sqlite',
-    storage: './Products.db'
-})
-
-class Item extends Model {}
-Item.init ({
-    name: DataTypes.STRING,
-    type: DataTypes.STRING,
-    brand: DataTypes.STRING,
-    quality: DataTypes.STRING,
-    price: DataTypes.DOUBLE,
-    quantity: DataTypes.INTEGER,
-}, {sequelize, modelName: 'item'})
-
-sequelize.sync();
-
-app.use(bodyParser.urlencoded({extended: false}))
-app.use(bodyParser.json())
-
-app.get('/items', async (req, res) => {
-    const items = await Item.findAll()
-    res.json(items)
-})
-
-app.get('/items/:id', async (req, res) => {
-    const items = await Item.findByPk(req.params.id)
-    res.json(items)
-})
-
-app.post('/item', async (req, res) => {
-    console.log("Posting: " + req.body)
-    const item = await Item.create(req.body);
-    res.json(item)
-})
-
-app.put('/items/:id', async (req, res) => {
-    const item = await Item.findByPk(req.params.id)
-    if (item) {
-        await item.update(req.body);
-        res.json(item)
-    }
-    else {
-        res.status(404).json({message: 'Item not found'})
-    }
-})
-
-app.delete('/items/:id', async (req, res) => {
-    const item = await Item.findByPk(req.params.id)
-    if (item) {
-        await item.destroy();
-        res.json({message: 'Item deleted'})
-    }
-    else {
-        res.status(404).json({message: 'Item not found'})
-    }
-})
-
 //Running
 
-app.use((req, res, next) => {
-    if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
-        next();
-    } else {
-        res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-        res.header('Expires', '-1');
-        res.header('Pragma', 'no-cache');
-        res.sendFile(path.join(__dirname, '../React/build', 'index.html'));
-    }
-});
+app.use(express.static(path.join(__dirname, '../React/build')));
 
-//app.use(express.static(path.join(__dirname, 'build')));
-app.use(express.static(path.join(__dirname, '../React/build')))
-
-app.use((req, res) => {
-    res.status(200).send('Hello World');
-});
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../React/build', 'index.html'))
+})
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`)
+    console.log(`Retro Game Bros site listening on port ${PORT}`)
 })

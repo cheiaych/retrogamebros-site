@@ -1,19 +1,29 @@
-import React, { useEffect } from "react"
-import { getItems } from '../DB'
+import React, { useState, useEffect } from "react"
 
 function Products () {
 
-    const getAllItems = async () => {
-        const response = await getItems();
-        console.log(response);
-    }
+    let [products, setProducts] = useState([]);
 
     useEffect(() => {
-        getAllItems();
-    })
+        const query = window.location.search
+        console.log('Query: ' + query)
+        fetch('/api/products' + query)
+            .then((res) => res.json())
+            .then((data) => {
+                setProducts(data)
+                console.log(products)
+            })
+            .catch((err) => console.error("Could not Fetch Products: ", err))
+    }, []);
 
     return (
-        <h1>Products</h1>
+        <div>
+            <h1>Products</h1>
+            <ul>
+                {products.map(product =>
+                    <li>{JSON.stringify(product)}</li>)}
+            </ul>
+        </div>
     )
 }
 export default Products

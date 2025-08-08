@@ -17,6 +17,7 @@ export const postItem = async (formValues: any) => {
 }
 
 export const getItems = async () => {
+    console.log("Opened Products Page")
     try {
         let response = await fetch('/items');
         let data = await response.json();

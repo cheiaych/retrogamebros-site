@@ -9,8 +9,8 @@ export default function Routing() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Home/>}/>
-                <Route path="Products" element={<Products/>}/>
-                <Route path="Admin" element={<Admin/>}/>
+                <Route path="products" element={<Products/>}/>
+                <Route path="admin" element={<Admin/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
         </BrowserRouter>

@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-and-start": "npm run build --prefix ../React && npm start --prefix ./"
+    "build-and-start": "npm run build --prefix ../React && npm start --prefix ./",
+    "dev": "nodemon -x \"npm run build-and-start\""
   },
   "author": "",
   "license": "ISC",
