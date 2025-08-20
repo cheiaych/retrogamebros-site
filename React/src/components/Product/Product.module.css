@@ -1,0 +1,5 @@
+.Product {
+    display: grid;
+    grid-template-columns: 300px 100px 500px 100px 100px;
+    gap: 10px
+}

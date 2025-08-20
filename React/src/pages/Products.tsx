@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import Product from "../components/Product/Product";
 
 function Products () {
 
@@ -11,7 +12,7 @@ function Products () {
             .then((res) => res.json())
             .then((data) => {
                 setProducts(data)
-                console.log(products)
+                //console.log(products)
             })
             .catch((err) => console.error("Could not Fetch Products: ", err))
     }, []);
@@ -19,10 +20,7 @@ function Products () {
     return (
         <div>
             <h1>Products</h1>
-            <ul>
-                {products.map(product =>
-                    <li>{JSON.stringify(product)}</li>)}
-            </ul>
+            {products.map((product) => (<Product product={product}/>))}
         </div>
     )
 }
