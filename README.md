@@ -11,3 +11,9 @@ Stating with nodemon for auto-restart on save
 cd Express
 npm run dev
 ```
+
+Starting React
+```
+cd React
+npm start
+```

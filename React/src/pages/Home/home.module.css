@@ -1,0 +1,32 @@
+.header {
+    
+}
+
+.headerBackground {
+    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url('../../assets/homeheader.jpg');
+    filter: blur(5px);
+    background-position: center;
+    background-size: cover;
+
+    min-height: 100vh;
+}
+
+.title {
+    position: absolute;
+
+    top: 40vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.titleName {
+    font-size: 100px;
+}
+
+.titleP {
+    padding-top: 30px;
+    display: inline-block;
+    text-align: center;
+    width: 80vw; 
+}
