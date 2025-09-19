@@ -14,6 +14,67 @@ async function getDBConnection() {
     return db;
 }
 
+async function getAllBrands(req, res) {
+    let db = await getDBConnection();
+    let brands = await db.all('SELECT * FROM Brands');
+    await db.close();
+    return res.json(brands);
+}
+
+async function getConsolesByBrand(req, res) {
+    const brand = sanitizeInput(req.query.brand);
+    
+    let db = await getDBConnection();
+
+    let query = 'SELECT * FROM Consoles';
+    let conditions = [];
+    let params = [];
+
+    if (brand) {
+        conditions.push('brand = ?');
+        params.push(brand);
+    }
+
+    if (conditions.length) {
+        query += ' WHERE ' + conditions.join(' AND ');
+    }
+
+    let consoles = await db.all(query, params);
+    await db.close()
+    return res.json(consoles)
+}
+
+async function getProductsByConsole(req, res) {
+    //const { brand, console, productType } = req.query;
+
+    const brand = sanitizeInput(req.query.brand);
+    const console = sanitizeInput(req.query.console);
+    const productType = sanitizeInput(req.query.productType)
+    
+    let db = await getDBConnection();
+
+    let query = 'SELECT * FROM Products';
+    let conditions = [];
+    let params = [];
+
+    if (brand) {
+        conditions.push('brand = ?');
+        params.push(brand);
+    }
+    if (console) {
+        conditions.push('console = ?');
+        params.push(console);
+    }
+
+    if (conditions.length) {
+        query += ' WHERE ' + conditions.join(' AND ');
+    }
+
+    let products = await db.all(query, params);
+    await db.close()
+    return res.json(products)
+}
+
 async function getAllProducts(req, res) {
     let db = await getDBConnection();
     let products = await db.all('SELECT * FROM Products');
