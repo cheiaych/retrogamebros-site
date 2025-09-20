@@ -14,6 +14,7 @@ async function getDBConnection() {
     return db;
 }
 
+//API DB calls
 async function getAllBrands(req, res) {
     let db = await getDBConnection();
     let brands = await db.all('SELECT * FROM Brands');
@@ -22,7 +23,7 @@ async function getAllBrands(req, res) {
 }
 
 async function getConsolesByBrand(req, res) {
-    const brand = sanitizeInput(req.query.brand);
+    const brand = sanitizeInput(req.params.brand);
     
     let db = await getDBConnection();
 
@@ -47,9 +48,8 @@ async function getConsolesByBrand(req, res) {
 async function getProductsByConsole(req, res) {
     //const { brand, console, productType } = req.query;
 
-    const brand = sanitizeInput(req.query.brand);
-    const console = sanitizeInput(req.query.console);
-    const productType = sanitizeInput(req.query.productType)
+    const brand = sanitizeInput(req.params.brand);
+    const console = sanitizeInput(req.params.console);
     
     let db = await getDBConnection();
 
@@ -124,7 +124,9 @@ function sanitizeInput(input, maxLength = 100) {
     return input;
 }
 
-app.get('/api/products', async function (req, res){
+//API Routes
+//Search routes first to avoid conflict with :brand
+app.get('/api/search', async function (req, res){
     //return getAllProducts(req, res)
     return getProductsByConditions(req, res);
 })
@@ -134,6 +136,19 @@ app.get('/api/products/Nintendo', async function (req, res){
     let products = await db.all('SELECT * FROM Products WHERE brand = "Nintendo"');
     await db.close();
     return res.json(products);
+})
+
+//Non-search routes with params instead of queries
+app.get('/api/brands', async function (req, res){
+    return getAllBrands(req, res);
+})
+
+app.get('/api/:brand', async function (req, res){
+    return getConsolesByBrand(req, res);
+})
+
+app.get('/api/:brand/:console', async function (req, res){
+    return getProductsByConsole(req, res);
 })
 
 //Running
