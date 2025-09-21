@@ -8,7 +8,7 @@ function Products () {
     useEffect(() => {
         const query = window.location.search
         console.log('Query: ' + query)
-        fetch('/api/products' + query)
+        fetch('/api/search' + query)
             .then((res) => res.json())
             .then((data) => {
                 setProducts(data)
