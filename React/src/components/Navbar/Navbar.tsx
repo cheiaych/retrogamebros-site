@@ -2,6 +2,8 @@ import React, { FC, useState, useEffect } from 'react';
 import styles from './Navbar.module.css';
 
 import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
+import { BrowserRouter, Link } from 'react-router-dom';
+import { link } from 'fs';
 
 interface NavbarProps {}
 
@@ -26,21 +28,21 @@ const TopNavbar: FC<NavbarProps> = () => {
       }, []);
 
   return (
-  <Navbar>
-    <Container className={styles.Navbar}>
-      <Navbar.Brand className='fs-1' href='/'>Retro Game Bros</Navbar.Brand>
-      <Nav className='fs-3'>
-        <Nav.Link href='/'>Home</Nav.Link>
-        <Nav.Link href='/About'>About</Nav.Link>
-        <NavDropdown title='Inventory'>
-          {brands.map((brand) => (
-            <NavDropdown.Item>{brand.name}</NavDropdown.Item>
-          ))}
-        </NavDropdown>
-        <Nav.Link href='/Contact'>Contact</Nav.Link>
-      </Nav>
-    </Container>
-  </Navbar>
+    <Navbar>
+      <Container className={styles.Navbar}>
+        <Navbar.Brand className='fs-1' as={Link} to='/'>Retro Game Bros</Navbar.Brand>
+        <Nav className='fs-3'>
+          <Nav.Link as={Link} to='/'>Home</Nav.Link>
+          <Nav.Link as={Link} to='/About'>About</Nav.Link>
+          <NavDropdown title='Inventory'>
+            {brands.map((brand) => (
+              <NavDropdown.Item as={Link} to={`/products/${brand.name}`}>{brand.name}</NavDropdown.Item>
+            ))}
+          </NavDropdown>
+          <Nav.Link as={Link} to='/Contact'>Contact</Nav.Link>
+        </Nav>
+      </Container>
+    </Navbar>
   );
 };
 

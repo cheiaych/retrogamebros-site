@@ -5,19 +5,21 @@ import NotFound from "./pages/NotFound"
 import Admin from "./pages/Admin"
 import About from "./pages/About"
 import Contact from "./pages/Contact"
+import Consoles from "./pages/Consoles"
+import Games from "./pages/Games"
 
 export default function Routing() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path="products" element={<Products/>}/>
-                <Route path="about" element={<About/>}/>
-                <Route path="contact" element={<Contact/>}/>
+        <Routes>
+            <Route path="/" element={<Home/>}/>
+            <Route path="products" element={<Products/>}/>
+            <Route path="products/:brand" element={<Consoles/>}/>
+            <Route path="products/:brand/:con" element={<Games/>}/>
+            <Route path="about" element={<About/>}/>
+            <Route path="contact" element={<Contact/>}/>
 
-                <Route path="admin" element={<Admin/>}/>
-                <Route path="*" element={<NotFound/>}/>
-            </Routes>
-        </BrowserRouter>
+            <Route path="admin" element={<Admin/>}/>
+            <Route path="*" element={<NotFound/>}/>
+        </Routes>
     )
 }

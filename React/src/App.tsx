@@ -4,13 +4,15 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, BrowserRouter} from "react-router-dom"
 import Routing from './Routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import TopNavbar from './components/Navbar/Navbar';
 
 function App() {
 
   return (
-    <Router>
+    <>
+      <TopNavbar></TopNavbar>
       <Routing />
-    </Router>
+    </>   
   );
 }
 

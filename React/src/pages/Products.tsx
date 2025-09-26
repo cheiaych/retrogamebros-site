@@ -6,6 +6,7 @@ function Products () {
     let [products, setProducts] = useState([]);
 
     useEffect(() => {
+        console.log('Loaded Products Page')
         const query = window.location.search
         console.log('Query: ' + query)
         fetch('/api/search' + query)
@@ -16,7 +17,7 @@ function Products () {
             })
             .catch((err) => console.error("Could not Fetch Products: ", err))
     }, []);
-
+    
     return (
         <div>
             <h1>Products</h1>
