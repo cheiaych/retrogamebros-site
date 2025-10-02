@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 import styles from './Console.module.css';
+import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 interface Console {
   id: number;
@@ -12,9 +14,11 @@ interface ConsoleProps {
 }
 
 const Console: FC<ConsoleProps> = ({console}) => (
-  <div className={styles.Console}>
-    <span className='name'>{console.name}</span> 
-  </div>
+  <Link to={`/products/${console.brand}/${console.name}`}>
+    <div className={styles.Console}>
+      <span className='name'>{console.name}</span> 
+    </div>
+  </Link> 
 );
 
 export default Console

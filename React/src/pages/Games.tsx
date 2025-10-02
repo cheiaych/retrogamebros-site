@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom";
+import Product from "../components/Product/Product";
 
 function Games() {
 
@@ -17,7 +18,10 @@ function Games() {
     }, []);
 
     return (
-        <h1>Games</h1>
+        <div>
+            <h1>Games</h1>
+            {games.map((product) => (<Product product={product}/>))}
+        </div>
     )
 }
 
