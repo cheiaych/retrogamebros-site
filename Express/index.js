@@ -117,6 +117,34 @@ async function getProductsByConditions(req, res) {
     return res.json(products)
 }
 
+async function searchProducts(req, res) {
+
+    const search = sanitizeInput(req.query.search);
+    
+    let db = await getDBConnection();
+
+    let query = 'SELECT * FROM Products';
+    let conditions = [];
+    let params = [];
+
+    /*conditions.push('brand LIKE ?');
+    params.push(`%${search}%`);
+
+    conditions.push('console LIKE ?');
+    params.push(`%${search}%`);*/
+
+    conditions.push('name LIKE ?');
+    params.push(`%${search}%`);
+
+    if (conditions.length) {
+        query += ' WHERE ' + conditions.join(' OR ');
+    }
+
+    let products = await db.all(query, params);
+    await db.close()
+    return res.json(products)
+}
+
 function sanitizeInput(input, maxLength = 100) {
     if (typeof input !== 'string') return '';
     input = input.trim();
@@ -128,7 +156,7 @@ function sanitizeInput(input, maxLength = 100) {
 //Search routes first to avoid conflict with :brand
 app.get('/api/search', async function (req, res){
     //return getAllProducts(req, res)
-    return getProductsByConditions(req, res);
+    return searchProducts(req, res);
 })
 
 app.get('/api/products/Nintendo', async function (req, res){

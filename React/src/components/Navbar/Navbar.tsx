@@ -1,9 +1,8 @@
-import React, { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, FormEvent, FormEventHandler } from 'react';
 import styles from './Navbar.module.css';
 
-import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
-import { BrowserRouter, Link } from 'react-router-dom';
-import { link } from 'fs';
+import { Nav, Navbar, NavDropdown, Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 interface NavbarProps {}
 
@@ -17,21 +16,28 @@ const TopNavbar: FC<NavbarProps> = () => {
   let [brands, setBrands] = useState<Brand[]>([]);
 
   useEffect(() => {
-          const query = window.location.search
-          console.log('Query: ' + query)
-          fetch('/api/brands' + query)
-              .then((res) => res.json())
-              .then((data) => {
-                  setBrands(data)
-              })
-              .catch((err) => console.error("Could not Fetch Brands: ", err))
-      }, []);
+    const query = window.location.search
+    console.log('Query: ' + query)
+    fetch('/api/brands' + query)
+        .then((res) => res.json())
+        .then((data) => {
+            setBrands(data)
+        })
+        .catch((err) => console.error("Could not Fetch Brands: ", err))
+  }, []);
+  
+  function searchSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget)
+    console.log(formData.get('search') as string);
+  }
 
   return (
     <Navbar>
       <Container className={styles.Navbar}>
         <Navbar.Brand className='fs-1' as={Link} to='/'>Retro Game Bros</Navbar.Brand>
-        <Nav className='fs-3'>
+        <Nav variant='underline' className='fs-3'>
           <Nav.Link as={Link} to='/'>Home</Nav.Link>
           <Nav.Link as={Link} to='/About'>About</Nav.Link>
           <NavDropdown title='Inventory'>
@@ -41,6 +47,22 @@ const TopNavbar: FC<NavbarProps> = () => {
           </NavDropdown>
           <Nav.Link as={Link} to='/Contact'>Contact</Nav.Link>
         </Nav>
+        <Form
+        onSubmit={searchSubmit}>
+          <Row>
+            <Col>
+              <Form.Control
+              name='search' 
+              type='text' 
+              autoComplete='off'
+              placeholder='Search'>  
+              </Form.Control>
+            </Col>
+            <Col>
+              <Button type='submit'>Search</Button>
+            </Col>
+          </Row>
+        </Form>
       </Container>
     </Navbar>
   );
