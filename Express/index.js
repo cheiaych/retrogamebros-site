@@ -17,7 +17,7 @@ async function getDBConnection() {
 //API DB calls
 async function getAllBrands(req, res) {
     let db = await getDBConnection();
-    let brands = await db.all('SELECT * FROM Brands');
+    let brands = await db.all('SELECT * FROM Brands ORDER BY name');
     await db.close();
     return res.json(brands);
 }
@@ -39,6 +39,8 @@ async function getConsolesByBrand(req, res) {
     if (conditions.length) {
         query += ' WHERE ' + conditions.join(' AND ');
     }
+
+    conditions.push('ORDER BY name');
 
     let consoles = await db.all(query, params);
     await db.close()
@@ -69,6 +71,8 @@ async function getProductsByConsole(req, res) {
     if (conditions.length) {
         query += ' WHERE ' + conditions.join(' AND ');
     }
+
+    query += (' ORDER BY productType, name');
 
     let products = await db.all(query, params);
     await db.close()
@@ -119,7 +123,7 @@ async function getProductsByConditions(req, res) {
 
 async function searchProducts(req, res) {
 
-    const search = sanitizeInput(req.query.search);
+    const search = sanitizeInput(req.query.name);
     
     let db = await getDBConnection();
 
@@ -139,6 +143,8 @@ async function searchProducts(req, res) {
     if (conditions.length) {
         query += ' WHERE ' + conditions.join(' OR ');
     }
+
+    conditions.push('ORDER BY brand, console, productType, name')
 
     let products = await db.all(query, params);
     await db.close()

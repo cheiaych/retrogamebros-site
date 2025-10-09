@@ -1,8 +1,8 @@
-import { FC, useState, useEffect, FormEvent, FormEventHandler } from 'react';
+import { FC, useState, useEffect, FormEvent } from 'react';
 import styles from './Navbar.module.css';
 
 import { Nav, Navbar, NavDropdown, Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface NavbarProps {}
 
@@ -13,12 +13,11 @@ interface Brand {
 
 const TopNavbar: FC<NavbarProps> = () => {
 
+  const navigate = useNavigate();
   let [brands, setBrands] = useState<Brand[]>([]);
 
   useEffect(() => {
-    const query = window.location.search
-    console.log('Query: ' + query)
-    fetch('/api/brands' + query)
+    fetch('/api/brands')
         .then((res) => res.json())
         .then((data) => {
             setBrands(data)
@@ -30,7 +29,10 @@ const TopNavbar: FC<NavbarProps> = () => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget)
-    console.log(formData.get('search') as string);
+    const name = formData.get('search') as String;
+    const searchString = name.trim().replace(/ /g, '+')
+
+    navigate(`/search?name=${searchString}`);
   }
 
   return (

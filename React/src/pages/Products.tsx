@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from "react"
+import { useParams } from "react-router-dom";
 import Product from "../components/Product/Product";
 
-function Products () {
+function Products() {
 
+    let { brand, con } = useParams();
     let [products, setProducts] = useState([]);
 
     useEffect(() => {
-        console.log('Loaded Products Page')
-        const query = window.location.search
-        console.log('Query: ' + query)
-        fetch('/api/search' + query)
+        fetch(`/api/${brand}/${con}`)
             .then((res) => res.json())
             .then((data) => {
                 setProducts(data)
-                //console.log(products)
+                console.log(products)
             })
-            .catch((err) => console.error("Could not Fetch Products: ", err))
-    }, []);
-    
+            .catch((err) => console.error(`Could not fetch games for ${con}: `, err))
+    }, [brand, con]);
+
     return (
         <div>
-            <h1>Products</h1>
+            <h1>Games</h1>
             {products.map((product) => (<Product product={product}/>))}
         </div>
     )
 }
+
 export default Products
