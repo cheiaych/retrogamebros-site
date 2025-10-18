@@ -1,5 +1,10 @@
 .Product {
     display: grid;
-    grid-template-columns: 100px 300px 100px 500px 100px 100px;
+    grid-template-columns: 300px 100px 100px;
     gap: 10px
+}
+
+.Product .description {
+    grid-column: 1 / -1;
+    width: 1000px
 }
