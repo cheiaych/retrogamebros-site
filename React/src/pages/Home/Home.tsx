@@ -2,9 +2,10 @@ import React from "react";
 import styles from './home.module.css';
 
 function Home() {
+
     return (
         <div className={styles.header}>
-            <div className={styles.headerBackground}></div>
+            <div className={styles.headerBackground} style={{backgroundImage: `linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,1)), url(/assets/home/header.jpg)`}}></div>
             <div className={`${styles.title} text-center`}>
                 <h1 className={`${styles.titleName} fw-bold`}>Retro Game Bros</h1>
                 <h1 className="display-3 fw-normal">Buy-Sell-Trade</h1>

@@ -7,6 +7,7 @@ interface Console {
   id: number;
   name: string; 
   brand: string;
+  img: string;
 }
 
 interface ConsoleProps {
@@ -16,7 +17,10 @@ interface ConsoleProps {
 const Console: FC<ConsoleProps> = ({console}) => (
   <Link to={`/products/${console.brand}/${console.name}`}>
     <div className={styles.Console}>
-      <span className='name'>{console.name}</span> 
+      <div>
+        <img src={`../../assets/consoles/${console.img}`}></img>
+      </div>
+      <div className='name'>{console.name}</div> 
     </div>
   </Link> 
 );

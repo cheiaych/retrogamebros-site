@@ -3,7 +3,6 @@
 }
 
 .headerBackground {
-    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url('../../assets/header.jpg');
     filter: blur(5px);
     background-position: center;
     background-size: cover;
