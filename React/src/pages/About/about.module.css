@@ -1,0 +1,28 @@
+.background {
+    background-position: center;
+    background-size:auto;
+
+    min-height: 100vh;
+}
+
+.blurOverlay {
+    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.title {
+    top: 40vh;
+    left: 50%;
+    width: 100%;
+}
+
+.titleName {
+    font-size: 100px;
+}
+
+.titleP {
+    padding-top: 30px;
+    display: inline-block;
+    text-align: center;
+    width: 80vw; 
+}
