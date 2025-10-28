@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { postItem, getItems } from '../DB'
+import { postItem, getItems } from '../../DB'
 
 function Admin () {
 

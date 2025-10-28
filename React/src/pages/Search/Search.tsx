@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSearchParams } from "react-router-dom";
-import Product from "../components/Product/Product";
+import Product from "../../components/Product/Product";
 
 function Products () {
 

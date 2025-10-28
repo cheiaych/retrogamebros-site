@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styles from './Console.module.css';
-import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 interface Console {
@@ -15,12 +15,12 @@ interface ConsoleProps {
 }
 
 const Console: FC<ConsoleProps> = ({console}) => (
-  <Link to={`/products/${console.brand}/${console.name}`}>
-    <div className={styles.Console}>
+  <Link to={`/products/${console.brand}/${console.name}`} style={{ textDecoration: 'none', color: 'black' }}>
+    <div className={`${styles.Console} text-center p-10`}>
       <div>
-        <img src={`../../assets/consoles/${console.img}`}></img>
+        <Image src={`../../assets/consoles/${console.img}`} height="200px"></Image>
       </div>
-      <div className='name'>{console.name}</div> 
+      <h3 className="display-6 fw-normal pt-3">{console.name}</h3>
     </div>
   </Link> 
 );
