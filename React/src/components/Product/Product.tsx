@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import styles from './Product.module.css';
+import { Col, Container, Row } from "react-bootstrap";
 
 interface Product {
   id: number;
@@ -18,12 +19,16 @@ interface ProductProps {
 }
 
 const Product: FC<ProductProps> = ({product}) => (
-  <div className={styles.Product}>
-    <span className='name'>{product.name}</span> 
-    <span className='condition'>{product.condition}</span> 
-    <span className='inStock'>{product.inStock === 0 ? `$${product.price.toFixed(2)}` : 'Sold'}</span>
-    {product.description.length > 0 && (<div className='description'>{product.description}</div>)}
-  </div>
+  <Container className="text-start">
+    <Row className="text-start">
+      <Col lg={8} className="fs-4 fw-normal">{product.name}</Col>
+      <Col xs={2} className="fs-5 fw-normal">{product.condition}</Col>
+      <Col xs={2} className="fs-5 fw-normal">{product.inStock === 0 ? (`$${product.price.toFixed(2)}`) : (<span className="text-danger">Sold</span>)}</Col>
+    </Row>
+    <Row className="text-start">
+      {product.description.length > 0 && (<div className='description'>{product.description}</div>)}
+    </Row>
+  </Container>
 );
 
 export default Product;

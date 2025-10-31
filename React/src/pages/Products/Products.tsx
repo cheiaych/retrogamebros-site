@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom";
 import Product from "../../components/Product/Product";
+import styles from './Products.module.css'
+import { Col, Container, Row } from "react-bootstrap";
 
 function Products() {
 
@@ -17,12 +19,6 @@ function Products() {
             .catch((err) => console.error(`Could not fetch games for ${con}: `, err))
     }, [brand, con]);
 
-    /*let accessories: any[] = [];
-    let consoles: any[] = [];
-    let controllers: any[] = [];
-    let games: any[] = [];
-    let others: any[] = [];*/
-    
     const productGroups = {
         Accessories: [],
         Consoles: [],
@@ -55,24 +51,38 @@ function Products() {
     })
 
     return (
-        <div>
-            <h1>{con}</h1>
-            {
-                sectionOrder.map(section => {
-                    const items = (productGroups as any)[section];
-                    if (items.length < 1) {
-                        return null;
-                    }
+        <>
+            <div className={styles.background} style={{backgroundImage: `linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,1)), url()`}}>
+                    <div className={styles.blurOverlay}>
+                        <Container className="py-5">
+                            <Row className="text-center">
+                                <h1 className="display-1 fw-bold">{con}</h1>
+                            </Row>
+                            {
+                                sectionOrder.map(section => {
+                                    const items = (productGroups as any)[section];
+                                    if (items.length < 1) {
+                                        return null;
+                                    }
 
-                    return (
-                        <div>
-                            <h2>{section}</h2>
-                            {items.map((i: Product) => (<Product product={i}/>))}
-                        </div>
-                    )
-                })
-            }
-        </div>
+                                    return (
+                                    <>
+                                        <Row className="text-center py-3">
+                                            <h3 className="display-5 fw-normal pt-3">{section}</h3>
+                                        </Row>
+                                        <Container>
+                                            <Row xs={2} className="g-5 justify-content-start">
+                                                {items.map((i: Product) => (<Col><Product product={i}/></Col>))}
+                                            </Row>
+                                        </Container>
+                                    </>    
+                                    )
+                                })
+                            }
+                        </Container>
+                </div>
+            </div>
+        </>
     )
 }
 
