@@ -9,6 +9,8 @@ interface NavbarProps {}
 interface Brand {
   id: number;
   name: string;
+  img: string;
+  other: number;
 }
 
 const TopNavbar: FC<NavbarProps> = () => {

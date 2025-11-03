@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import styles from './Product.module.css';
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Image } from "react-bootstrap";
 
 interface Product {
   id: number;
@@ -12,6 +12,7 @@ interface Product {
   description: string; 
   condition: string; 
   inStock: number;
+  img: string;
 }
 
 interface ProductProps {
@@ -20,6 +21,12 @@ interface ProductProps {
 
 const Product: FC<ProductProps> = ({product}) => (
   <Container className="text-start">
+    {product.img && (
+      <Row>
+        <Col>
+          <Image src={`../../assets/products/${product.brand}/${product.img}`} height="200px"></Image>
+        </Col>
+      </Row>)}
     <Row className="text-start">
       <Col lg={8} className="fs-4 fw-normal">{product.name}</Col>
       <Col xs={2} className="fs-5 fw-normal">{product.condition}</Col>

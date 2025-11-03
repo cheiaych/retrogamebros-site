@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styles from './Console.module.css';
-import { Image } from 'react-bootstrap';
+import { Col, Container, Row, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 interface Console {
@@ -16,12 +16,22 @@ interface ConsoleProps {
 
 const Console: FC<ConsoleProps> = ({console}) => (
   <Link to={`/products/${console.brand}/${console.name}`} style={{ textDecoration: 'none', color: 'black' }}>
-    <div className={`${styles.Console} text-center p-10`}>
-      <div>
-        <Image src={`../../assets/consoles/${console.img}`} height="200px"></Image>
-      </div>
-      <h3 className="display-6 fw-normal pt-3">{console.name}</h3>
-    </div>
+    <Container className="text-center">
+      {console.img ? (
+        <Row>
+          <Col>
+            <Image height="200px" width="auto" src={`../../assets/consoles/${console.brand}/${console.img}`}></Image>
+          </Col>
+        </Row>
+      ) : (
+        <Row>
+          <div style={{ width: '200px', height: '200px' }}></div>
+        </Row>
+      )}
+      <Row>
+        <Col className="display-6 fw-normal pt-3">{console.name}</Col>
+      </Row>
+    </Container>
   </Link> 
 );
 
