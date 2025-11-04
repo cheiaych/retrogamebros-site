@@ -10,7 +10,7 @@ interface Brand {
   id: number;
   name: string;
   img: string;
-  other: number;
+  isOther: number;
 }
 
 const TopNavbar: FC<NavbarProps> = () => {
@@ -26,6 +26,9 @@ const TopNavbar: FC<NavbarProps> = () => {
         })
         .catch((err) => console.error("Could not Fetch Brands: ", err))
   }, []);
+
+  const regularBrands = brands.filter(b => b.isOther === 0);
+  const otherBrands = brands.filter(b => b.isOther === 1);
   
   function searchSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,9 +48,14 @@ const TopNavbar: FC<NavbarProps> = () => {
           <Nav.Link as={Link} to='/'>Home</Nav.Link>
           <Nav.Link as={Link} to='/About'>About</Nav.Link>
           <NavDropdown title='Inventory'>
-            {brands.map((brand) => (
+            {regularBrands.map((brand) => (
               <NavDropdown.Item as={Link} to={`/products/${brand.name}`}>{brand.name}</NavDropdown.Item>
             ))}
+            <NavDropdown title='Other Brands' drop="end">
+              {otherBrands.map((brand) => (
+                <NavDropdown.Item as={Link} to={`/products/${brand.name}`}>{brand.name}</NavDropdown.Item>
+              ))}
+            </NavDropdown>
           </NavDropdown>
           <Nav.Link as={Link} to='/Contact'>Contact</Nav.Link>
         </Nav>
