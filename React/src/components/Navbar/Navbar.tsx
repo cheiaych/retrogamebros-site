@@ -59,8 +59,7 @@ const TopNavbar: FC<NavbarProps> = () => {
           </NavDropdown>
           <Nav.Link as={Link} to='/Contact'>Contact</Nav.Link>
         </Nav>
-        <Form
-        onSubmit={searchSubmit}>
+        <Form onSubmit={searchSubmit}>
           <Row>
             <Col>
               <Form.Control

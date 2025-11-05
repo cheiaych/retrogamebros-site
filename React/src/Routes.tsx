@@ -5,6 +5,7 @@ import NotFound from "./pages/NotFound/NotFound"
 import Admin from "./pages/Admin/Admin"
 import About from "./pages/About/About"
 import Contact from "./pages/Contact/Contact"
+import Brand from "./pages/Brands/Brands"
 import Consoles from "./pages/Consoles/Consoles"
 import Games from "./pages/Products/Products"
 
@@ -13,6 +14,7 @@ export default function Routing() {
         <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="search" element={<Products/>}/>
+            <Route path="brands" element={<Brand/>}/>
             <Route path="products/:brand" element={<Consoles/>}/>
             <Route path="products/:brand/:con" element={<Games/>}/>
             <Route path="about" element={<About/>}/>

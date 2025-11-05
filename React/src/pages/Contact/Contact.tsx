@@ -73,7 +73,7 @@ function Contact() {
                                 </Col>
                             </Col>
                             <Col className="text-start">
-                                <h3 className="display-5 fw-normal pt-3">Location Details</h3>
+                                <h3 className="display-5 fw-normal">Location Details</h3>
                                 <p className="fs-5 fw-normal text-start">4385 Sheppard Ave E, Unit 12, Toronto</p>
                                 <iframe
                                     title="Our Location"

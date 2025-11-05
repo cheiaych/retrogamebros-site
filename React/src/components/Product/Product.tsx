@@ -30,7 +30,7 @@ const Product: FC<ProductProps> = ({product}) => (
     <Row className="text-start">
       <Col lg={8} className="fs-4 fw-normal">{product.name}</Col>
       <Col xs={2} className="fs-5 fw-normal">{product.condition}</Col>
-      <Col xs={2} className="fs-5 fw-normal">{product.inStock === 0 ? (`$${product.price.toFixed(2)}`) : (<span className="text-danger">Sold</span>)}</Col>
+      <Col xs={2} className="fs-5 fw-normal">{(product.inStock === 0 || product.price <= 0) ? (<span className="text-danger">Sold</span>) : (`$${product.price.toFixed(2)}`) }</Col>
     </Row>
     <Row className="text-start">
       {product.description.length > 0 && (<div className='description'>{product.description}</div>)}
