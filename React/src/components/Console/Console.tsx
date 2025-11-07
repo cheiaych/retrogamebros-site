@@ -20,7 +20,7 @@ const Console: FC<ConsoleProps> = ({console}) => (
       {console.img ? (
         <Row>
           <Col>
-            <Image height="200px" width="auto" src={`../../assets/consoles/${console.brand}/${console.img}`}></Image>
+            <Image height="200px" width="auto" src={`/assets/consoles/${console.brand.toLowerCase()}/${console.img}`}></Image>
           </Col>
         </Row>
       ) : (

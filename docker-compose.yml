@@ -1,0 +1,8 @@
+version: "2.6"
+services:
+  web:
+    build: .
+    ports: 
+      - "8080:8080"
+    volumes:
+      - ./Express/Products.db:/app/Express/Products.db 

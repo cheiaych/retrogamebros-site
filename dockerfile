@@ -11,7 +11,7 @@ RUN cd ./React && npm run build
 
 FROM node:22
 
-WORKDIR ./app
+WORKDIR /app
 
 COPY Express/package*.json ./Express/
 RUN cd Express && npm install
@@ -20,5 +20,7 @@ COPY Express ./Express
 
 COPY --from=build /app/React/build ./React/build
 
+WORKDIR /app/Express
+
 EXPOSE 8080
-CMD ["node", "Express/index.js"]
+CMD ["node", "index.js"]
