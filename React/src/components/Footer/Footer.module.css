@@ -1,0 +1,16 @@
+.footer {
+    background: lightgray;
+    padding-top: 15px;
+    padding-bottom: 25px;
+}
+
+.hourstable {
+    display: flex;
+    justify-content: center;
+}
+
+.copyright {
+    display: flex;
+    justify-content: right;
+    align-items: end;
+}

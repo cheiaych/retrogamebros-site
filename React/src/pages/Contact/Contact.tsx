@@ -72,9 +72,12 @@ function Contact() {
                                     </div>
                                 </Col>
                             </Col>
-                            <Col className="text-start">
+                            <Col className="text-center">
                                 <h3 className="display-5 fw-normal">Location Details</h3>
-                                <p className="fs-5 fw-normal text-start">4385 Sheppard Ave E, Unit 12, Toronto</p>
+                                <p className="fs-5 fw-normal">
+                                    4385 Sheppard Ave E, Unit 12<br></br>
+                                    Toronto, Ontario, Canada
+                                </p>
                                 <iframe
                                     title="Our Location"
                                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2880.3419777822237!2d-79.27239522341621!3d43.786516443797545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4d17fb6beffdb%3A0x723012e66c6907c0!2sRetro%20Game%20Bros!5e0!3m2!1sen!2sca!4v1761617052845!5m2!1sen!2sca" 
