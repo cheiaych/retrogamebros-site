@@ -1,7 +1,7 @@
 import { FC, useState, useEffect, FormEvent } from 'react';
 import styles from './Navbar.module.css';
 
-import { Nav, Navbar, NavDropdown, Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Nav, Navbar, NavDropdown, Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface NavbarProps {}
@@ -60,17 +60,18 @@ const TopNavbar: FC<NavbarProps> = () => {
           <Nav.Link as={Link} to='/Contact'>Contact</Nav.Link>
         </Nav>
         <Form onSubmit={searchSubmit}>
-          <Row>
+          <Row className={styles.searchbar}>
             <Col>
-              <Form.Control
-              name='search' 
-              type='text' 
-              autoComplete='off'
-              placeholder='Search'>  
-              </Form.Control>
-            </Col>
-            <Col>
-              <Button type='submit'>Search</Button>
+              <InputGroup>
+                <Form.Control
+                name='search' 
+                type='text' 
+                autoComplete='off'
+                placeholder='Search'
+                className={styles.searchinput}>  
+                </Form.Control>
+                <Button type='submit' className={styles.searchbutton}>Search</Button>
+              </InputGroup>
             </Col>
           </Row>
         </Form>

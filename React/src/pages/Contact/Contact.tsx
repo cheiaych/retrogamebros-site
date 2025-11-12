@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 function Contact() {
     return (
         <>
-            <div className={styles.background} style={{backgroundImage: `linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,1)), url(/assets/about/header.jpg)`}}>
+            <div className={styles.background} style={{backgroundImage: `linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,1)), url(/assets/contact/header.jpg)`}}>
                 <div className={styles.blurOverlay}>
                     <Container className="py-5">
                         <Row className="text-center">
