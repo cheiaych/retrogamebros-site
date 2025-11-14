@@ -187,10 +187,10 @@ app.get('/api/:brand/:console', async function (req, res){
 
 //Running
 
-app.use(express.static(path.join(__dirname, '../React/build')));
+app.use(express.static(path.join(__dirname, './React/build')));
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../React/build', 'index.html'))
+    res.sendFile(path.join(__dirname, './React/build', 'index.html'))
 })
 
 const PORT = process.env.PORT || 8080;
