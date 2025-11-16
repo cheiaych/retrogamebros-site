@@ -8,7 +8,7 @@
     "build-and-start": "npm run build-react && npm start",
     "dev": "nodemon -x \"npm run build-and-start\"",
     "build-react": "npm run build --prefix ../React && node scripts/copy-react-build",
-    "build-production": "npm install --prefix ../React && npm run build-react && npm install --production"
+    "build-production": "npm install ./ --production && npm install --prefix ../React && npm run build-react"
   },
   "author": "",
   "license": "ISC",
