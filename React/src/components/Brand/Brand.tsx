@@ -20,7 +20,7 @@ const Brand: FC<BrandProps> = ({brand}) => (
       {brand.img ? (
         <Row>
           <Col>
-            <Image height="200px" width="auto" src={`../../assets/brands/${brand.img}`}></Image>
+            <Image height="200px" width="auto" src={`/uploads/brands/${brand.img}`}></Image>
           </Col>
         </Row>
       ) : (

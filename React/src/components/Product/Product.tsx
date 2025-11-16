@@ -24,7 +24,7 @@ const Product: FC<ProductProps> = ({product}) => (
     {product.img && (
       <Row>
         <Col>
-          <Image src={`/assets/products/${product.brand.toLowerCase()}/${product.img}`} height="200px"></Image>
+          <Image src={`/uploads/products/${product.brand.toLowerCase()}/${product.img}`} height="200px"></Image>
         </Col>
       </Row>)}
     <Row className="text-start">

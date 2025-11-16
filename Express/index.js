@@ -189,6 +189,9 @@ app.get('/api/:brand/:console', async function (req, res){
 
 app.use(express.static(path.join(__dirname, './React/build')));
 
+app.use('/assets', express.static(path.join(__dirname, 'React/build/assets')));
+app.use('/uploads', express.static(path.join(__dirname, 'React/uploads')))
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './React/build', 'index.html'))
 })
