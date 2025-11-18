@@ -23,9 +23,9 @@ function Consoles() {
         <>
             <Container className="py-5">
                 <Row className="text-center">
-                    <h1 className="display-1 fw-bold">{brand}</h1>
+                    <h1 className="display-3 fw-bold">{brand}</h1>
                 </Row>
-                <Row xs={3} className="g-3">
+                <Row md={3} sm={1} xs={1} className="g-3">
                     {consoles.map((console) => (
                     <Col className="py-5">
                         <Console console={console}/>

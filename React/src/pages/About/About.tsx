@@ -9,7 +9,7 @@ function About() {
                 <div className={styles.blurOverlay}>
                     <Container className="py-5">
                         <Row className="text-center">
-                            <h1 className="display-1 fw-bold">About Us</h1>
+                            <h1 className="display-3 fw-bold">About Us</h1>
                         </Row>
                         <Row className=" text-center pt-5">
                             <Col>

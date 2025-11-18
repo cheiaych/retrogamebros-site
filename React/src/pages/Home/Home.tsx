@@ -10,10 +10,10 @@ function Home() {
                 <div className={styles.blurOverlay}>
                     <Container className="py-5">
                         <Row className="text-center">
-                            <h1 className="display-1 fw-bold">Retro Game Bros</h1>
-                            <h2 className="display-3 fw-bold pt-3">Buy-Sell-Trade</h2>
-                            <h2 className="display-3 fw-bold">Retro to Next Gen</h2>
-                            <p className="fs-2 fw-normal text-justify pt-3">Stop by and experience a blast from the past with Retro Game Bros!<br></br>One of the highest rated game stores in Toronto!<br></br>We strive to provide a large variety of games, at competitive prices!</p>
+                            <h1 className="display-3 fw-bold">Retro Game Bros</h1>
+                            <h2 className="display-5 fw-bold pt-3">Buy-Sell-Trade</h2>
+                            <h2 className="display-5 fw-bold">Retro to Next Gen</h2>
+                            <p className="fs-3 fw-normal text-justify pt-3">Stop by and experience a blast from the past with Retro Game Bros!<br></br>One of the highest rated game stores in Toronto!<br></br>We strive to provide a large variety of games, at competitive prices!</p>
                         </Row>
                         <Row className="text-center pt-5">
                             <Col className="pr-3">

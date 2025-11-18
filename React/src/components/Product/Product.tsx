@@ -21,12 +21,6 @@ interface ProductProps {
 
 const Product: FC<ProductProps> = ({product}) => (
   <Container className="text-start">
-    {product.img && (
-      <Row>
-        <Col>
-          <Image src={`/uploads/products/${product.brand.toLowerCase()}/${product.img}`} height="200px"></Image>
-        </Col>
-      </Row>)}
     <Row className="text-start">
       <Col lg={8} className="fs-4 fw-normal">{product.name}</Col>
       <Col xs={2} className="fs-5 fw-normal">{product.condition}</Col>
@@ -35,6 +29,12 @@ const Product: FC<ProductProps> = ({product}) => (
     <Row className="text-start">
       {product.description.length > 0 && (<div className='description'>{product.description}</div>)}
     </Row>
+    {product.img && (
+      <Row className='pt-3 pb-5'>
+        <Col className='text-center'>
+          <Image className='img-fluid' style={{ maxHeight: '40vh'}} src={`/uploads/products/${product.brand.toLowerCase()}/${product.img}`}></Image>
+        </Col>
+      </Row>)}
   </Container>
 );
 

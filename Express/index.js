@@ -140,6 +140,9 @@ async function searchProducts(req, res) {
     conditions.push('name LIKE ?');
     params.push(`%${search}%`);
 
+    conditions.push('description LIKE ?');
+    params.push(`%${search}%`);
+
     if (conditions.length) {
         query += ' WHERE ' + conditions.join(' OR ');
     }
@@ -197,6 +200,6 @@ app.get('*', (req, res) => {
 })
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Retro Game Bros site listening on port ${PORT}`)
 })

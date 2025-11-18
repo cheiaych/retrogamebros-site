@@ -17,10 +17,13 @@ interface BrandProps {
 const Brand: FC<BrandProps> = ({brand}) => (
   <Link to={`/products/${brand.name}`} style={{ textDecoration: 'none', color: 'black' }}>
     <Container className="text-center">
+      <Row>
+        <Col className="display-6 fw-normal pt-3">{brand.name}</Col>
+      </Row>
       {brand.img ? (
         <Row>
-          <Col>
-            <Image height="200px" width="auto" src={`/uploads/brands/${brand.img}`}></Image>
+          <Col className='text-center'>
+            <Image className='img-fluid' src={`/uploads/brands/${brand.img}`}></Image>
           </Col>
         </Row>
       ) : (
@@ -28,9 +31,6 @@ const Brand: FC<BrandProps> = ({brand}) => (
           <div style={{ width: '200px', height: '200px' }}></div>
         </Row>
       )}
-      <Row>
-        <Col className="display-6 fw-normal pt-3">{brand.name}</Col>
-      </Row>
     </Container>
   </Link> 
 );

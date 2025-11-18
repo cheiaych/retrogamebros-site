@@ -41,24 +41,26 @@ const TopNavbar: FC<NavbarProps> = () => {
   }
 
   return (
-    <Navbar>
+    <Navbar collapseOnSelect expand='lg'>
       <Container className={styles.Navbar}>
-        <Navbar.Brand className='fs-1' as={Link} to='/'>Retro Game Bros</Navbar.Brand>
-        <Nav variant='underline' className='fs-3'>
-          <Nav.Link as={Link} to='/'>Home</Nav.Link>
-          <Nav.Link as={Link} to='/About'>About</Nav.Link>
-          <NavDropdown title='Inventory'>
-            {regularBrands.map((brand) => (
-              <NavDropdown.Item as={Link} to={`/products/${brand.name}`}>{brand.name}</NavDropdown.Item>
-            ))}
-            <NavDropdown title='Other Brands' drop="end">
-              {otherBrands.map((brand) => (
-                <NavDropdown.Item as={Link} to={`/products/${brand.name}`}>{brand.name}</NavDropdown.Item>
+        <Navbar.Brand className='fs-3' as={Link} to='/'>Retro Game Bros</Navbar.Brand>
+        <Navbar.Collapse>
+          <Nav className='fs-5'>
+            <Nav.Link as={Link} to='/' eventKey={1}>Home</Nav.Link>
+            <Nav.Link as={Link} to='/About' eventKey={2}>About</Nav.Link>
+            <NavDropdown title='Inventory'>
+              {regularBrands.map((brand) => (
+                <NavDropdown.Item as={Link} to={`/products/${brand.name}`} eventKey={4 + brand.id}>{brand.name}</NavDropdown.Item>
               ))}
+              <NavDropdown title='Other Brands' drop="end">
+                {otherBrands.map((brand) => (
+                  <NavDropdown.Item as={Link} to={`/products/${brand.name}`} eventKey={4 + brand.id}>{brand.name}</NavDropdown.Item>
+                ))}
+              </NavDropdown>
             </NavDropdown>
-          </NavDropdown>
-          <Nav.Link as={Link} to='/Contact'>Contact</Nav.Link>
-        </Nav>
+            <Nav.Link as={Link} to='/Contact' eventKey={3}>Contact</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
         <Form onSubmit={searchSubmit}>
           <Row className={styles.searchbar}>
             <Col>
@@ -75,6 +77,7 @@ const TopNavbar: FC<NavbarProps> = () => {
             </Col>
           </Row>
         </Form>
+        <Navbar.Toggle className=''/>
       </Container>
     </Navbar>
   );

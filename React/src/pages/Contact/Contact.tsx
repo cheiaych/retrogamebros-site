@@ -10,13 +10,13 @@ function Contact() {
                 <div className={styles.blurOverlay}>
                     <Container className="py-5">
                         <Row className="text-center">
-                            <h1 className="display-1 fw-bold">Contact</h1>
+                            <h1 className="display-3 fw-bold">Contact</h1>
                         </Row>
                         <Row className="text-center py-5">
                             <Col>
                                 <Col>
                                     <h3 className="display-5 fw-normal text-start">Business Hours</h3>
-                                    <table className="fs-4">
+                                    <table className="fs-5">
                                         <tbody>
                                             <tr className="py-5">
                                                 <td className="text-start">Mon-Tues:</td>
@@ -37,7 +37,7 @@ function Contact() {
                                         </tbody>
                                     </table>
                                     <h3 className="display-5 fw-normal text-start pt-5">Contact Info</h3>
-                                        <table className="fs-4">
+                                        <table className="fs-5">
                                             <tbody>
                                                 <tr className="text-start py-5">
                                                     <td>Phone:</td>
@@ -72,7 +72,7 @@ function Contact() {
                                     </div>
                                 </Col>
                             </Col>
-                            <Col className="text-center">
+                            <Col className="text-center py-5 py-lg-0">
                                 <h3 className="display-5 fw-normal">Location Details</h3>
                                 <p className="fs-5 fw-normal">
                                     4385 Sheppard Ave E, Unit 12<br></br>

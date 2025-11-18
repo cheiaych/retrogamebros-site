@@ -17,10 +17,13 @@ interface ConsoleProps {
 const Console: FC<ConsoleProps> = ({console}) => (
   <Link to={`/products/${console.brand}/${console.name}`} style={{ textDecoration: 'none', color: 'black' }}>
     <Container className="text-center">
+      <Row>
+        <Col className="display-6 fw-normal pt-3">{console.name}</Col>
+      </Row>
       {console.img ? (
-        <Row>
-          <Col>
-            <Image height="200px" width="auto" src={`/uploads/consoles/${console.brand.toLowerCase()}/${console.img}`}></Image>
+        <Row className='pt-3 pb-4'>
+          <Col className='text-center'>
+            <Image className='img-fluid' style={{ maxHeight: '30vh'}} src={`/uploads/consoles/${console.brand.toLowerCase()}/${console.img}`}></Image>
           </Col>
         </Row>
       ) : (
@@ -28,9 +31,6 @@ const Console: FC<ConsoleProps> = ({console}) => (
           <div style={{ width: '200px', height: '200px' }}></div>
         </Row>
       )}
-      <Row>
-        <Col className="display-6 fw-normal pt-3">{console.name}</Col>
-      </Row>
     </Container>
   </Link> 
 );

@@ -56,7 +56,7 @@ function Products() {
                     <div className={styles.blurOverlay}>
                         <Container className="py-5">
                             <Row className="text-center">
-                                <h1 className="display-1 fw-bold">{con}</h1>
+                                <h1 className="display-3 fw-bold">{con}</h1>
                             </Row>
                             {
                                 sectionOrder.map(section => {
@@ -71,7 +71,7 @@ function Products() {
                                             <h3 className="display-5 fw-normal pt-3">{section}</h3>
                                         </Row>
                                         <Container>
-                                            <Row xs={2} className="g-5 justify-content-start">
+                                            <Row md={2} sm={1} xs={1} className="g-5 justify-content-start">
                                                 {items.map((i: Product) => (<Col><Product product={i}/></Col>))}
                                             </Row>
                                         </Container>

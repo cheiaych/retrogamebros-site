@@ -25,7 +25,7 @@ function Brands() {
         <>
             <Container className="py-5">
                 <Row className="text-center">
-                    <h1 className="display-1 fw-bold">Brands</h1>
+                    <h1 className="display-3 fw-bold">Brands</h1>
                 </Row>
                 <Row xs={3} className="g-3">
                     {regularBrands.map((brand) => (
