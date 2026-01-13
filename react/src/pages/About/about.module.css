@@ -1,9 +1,0 @@
-.background {
-    background-position: top;
-    min-width: 100vw;
-}
-
-.blurOverlay {
-    backdrop-filter: blur(10px);
-    background-color: rgba(0, 0, 0, 0.0);
-}
