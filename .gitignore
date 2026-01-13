@@ -2,3 +2,4 @@ React/node_modules
 React/build
 Express/node_modules
 Express/React/build
+Express/.env

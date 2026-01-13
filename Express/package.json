@@ -2,23 +2,27 @@
   "name": "retro-game-bros-express",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-and-start": "npm run build-react && npm start",
     "dev": "nodemon -x \"npm run build-and-start\"",
-    "build-react": "npm run build --prefix ../React && node scripts/copy-react-build.js",
-    "build-production": "npm install ./ --production && npm install --prefix ../React && npm run build-react"
+    "build-react": "npm run build --prefix ../react && node scripts/copy-react-build.js",
+    "build-production": "npm install ./ --production && npm install --prefix ../react && npm run build-react"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
     "express": "^4.19.2",
+    "express-session": "^1.18.2",
+    "fs-extra": "^11.3.2",
     "sequelize": "^6.37.3",
     "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7",
-    "fs-extra": "^11.3.2"
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
