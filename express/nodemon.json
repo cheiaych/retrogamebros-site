@@ -1,0 +1,5 @@
+{
+  "watch": ["../express/", "../react/src"],
+  "ext": "js, css, tsx",
+  "ignore": [".git", "../express/node_modules", "./react/*"]
+}

@@ -1,5 +1,5 @@
-React/node_modules
-React/build
-Express/node_modules
-Express/React/build
-Express/.env
+react/node_modules
+react/build
+express/node_modules
+express/React/build
+express/.env

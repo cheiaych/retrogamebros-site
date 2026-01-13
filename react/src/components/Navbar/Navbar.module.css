@@ -1,0 +1,22 @@
+.searchbar {
+    
+}
+
+.searchinput {
+
+}
+
+.searchinput:focus {
+    box-shadow: none;
+    border-color: black;
+}
+
+.searchbutton {
+    border: none;
+    background: black;
+}
+
+.searchbutton:hover {
+    border: none;
+    background: grey;
+}
