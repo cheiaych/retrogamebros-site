@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useState, useEffect, FormEvent } from 'react';
 import { postItem, getItems } from '../../DB'
+import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
+
+import ProductForm from "../../components/Admin/ProductForm";
+import BrandForm from '../../components/Admin/BrandForm';
+import ConsoleForm from '../../components/Admin/ConsoleForm';
 
 function Admin () {
 
     const [authorized, setAuthorized] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
 
-    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
     useEffect(() => {
@@ -21,7 +25,12 @@ function Admin () {
         })
     }, []);
 
-    const login = async () => {
+    async function adminLogin(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const formData = new FormData(event.currentTarget)
+        const password = formData.get('password') as String;
+
         const res = await fetch('/admin/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -31,38 +40,11 @@ function Admin () {
         if (res.ok) {
             setAuthorized(true);
             setShowLogin(false);
-            setPassword('');
+            formData.set('password', '') ;
         }
         else {
             setError('Incorrect Password');
         }
-    }
-
-    const [itemFormValues, setItemFormValues] = useState({
-        name: '',
-        type: '',
-        brand: '',
-        quality: '',
-        price: 0.00,
-        quantity: 0
-    });
-
-    function handleChange(e: any) {
-        const { name, value } = e.target;
-        setItemFormValues({
-            ...itemFormValues,
-            [name]: value
-        })
-    }
-
-    const submitItem = async () => {
-        const response = await postItem(itemFormValues);
-        console.log(response);
-    }
-
-    const getAllItems = async () => {
-        const response = await getItems();
-        console.log(response);
     }
 
     return (
@@ -71,28 +53,29 @@ function Admin () {
                 <div>
                     <div>
                         <h2>Admin Access</h2>
-                        <input
-                        type="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        />
-                        <button onClick={login}>Login</button>
+                        <Form onSubmit={adminLogin}>
+                            <Row>
+                                <Col>
+                                <InputGroup>
+                                    <Form.Control
+                                    name='password' 
+                                    type='password' 
+                                    autoComplete='off'
+                                    placeholder='Password'
+                                    >  
+                                    </Form.Control>
+                                    <Button type='submit'>Search</Button>
+                                </InputGroup>
+                                </Col>
+                            </Row>
+                        </Form>
                         {error && <p className="error">{error}</p>}
                     </div>
                 </div>
             )}
             {authorized && (
                 <div className="Admin">
-                    <form>
-                    <label>Name</label><input name="name" value={itemFormValues.name} type="text" onChange={handleChange}></input><br/>
-                    <label>Type</label><input name="type" value={itemFormValues.type} type="text" onChange={handleChange}></input><br/>
-                    <label>Brand</label><input name="brand" value={itemFormValues.brand} type="text" onChange={handleChange}></input><br/>
-                    <label>Quality</label><input name="quality" value={itemFormValues.quality} type="text" onChange={handleChange}></input><br/>
-                    <label>Price</label><input name="price" value={itemFormValues.price} type="number" onChange={handleChange}></input><br/>
-                    <label>Quantity</label><input name="quantity" value={itemFormValues.quantity} type="number" onChange={handleChange}></input><br/>
-                    <button type="button" onClick={submitItem}>Post</button>
-                    </form>
-                    <button type="button" onClick={getAllItems}>Get</button>
+                    <BrandForm></BrandForm>
                 </div>
             )}
         </>

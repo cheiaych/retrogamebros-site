@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom";
 import Product from "../../components/Product/Product";
-import styles from './Products.module.css'
+import styles from "./Products.module.css"
 import { Col, Container, Row } from "react-bootstrap";
 
 function Products() {
