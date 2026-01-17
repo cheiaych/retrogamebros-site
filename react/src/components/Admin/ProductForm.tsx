@@ -18,6 +18,10 @@ const ProductForm: FC<ProductFormProps> = () => {
         img: ''
     });
 
+    useEffect(() => {
+        
+    })
+
     return (
         <>
             <div>

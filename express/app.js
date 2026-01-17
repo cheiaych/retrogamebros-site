@@ -1,7 +1,6 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url';
-import { isAdmin } from './auth.js';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
 import dotenv from 'dotenv';
@@ -37,6 +36,13 @@ async function getAllBrands(req, res) {
     let brands = await db.all('SELECT * FROM Brands ORDER BY name');
     await db.close();
     return res.json(brands);
+}
+
+async function getAllConsoles(req, res) {
+    let db = await getDBConnection();
+    let consoles = await db.all('SELECT * FROM Consoles ORDER BY name');
+    await db.close();
+    return res.json(consoles);
 }
 
 async function getConsolesByBrand(req, res) {
@@ -171,6 +177,49 @@ async function searchProducts(req, res) {
     return res.json(products)
 }
 
+//Admin DB calls
+
+//Brands
+async function postBrand() {
+    
+}
+
+async function putBrand(id) {
+    
+}
+
+async function deleteBrand(id) {
+    
+}
+
+//Consoles
+async function postConsole() {
+    
+}
+
+async function putConsole(id) {
+    
+}
+
+async function deleteConsole(id) {
+    
+}
+
+//Products
+async function postProduct() {
+    
+}
+
+async function putProduct(id) {
+    
+}
+
+async function deleteProduct(id) {
+    
+}
+
+//Input sanitizer
+
 function sanitizeInput(input, maxLength = 100) {
     if (typeof input !== 'string') return '';
     input = input.trim();
@@ -197,6 +246,10 @@ app.get('/api/brands', async function (req, res){
     return getAllBrands(req, res);
 })
 
+app.get('/api/consoles', async function (req, res){
+    return getAllConsoles(req, res);
+})
+
 app.get('/api/:brand', async function (req, res){
     return getConsolesByBrand(req, res);
 })
@@ -206,6 +259,7 @@ app.get('/api/:brand/:console', async function (req, res){
 })
 
 //Auth routing
+
 app.get ('/admin/check', (req, res) => {
     if (!req.session?.isAdmin) {
         return res.status(403).json({ error: 'Forbidden' })
@@ -228,6 +282,31 @@ app.post('/admin/login', async (req, res) => {
     req.session.isAdmin = true;
     res.json({ success: true })
 });
+
+function isAdmin (req, res, next) {
+    if (!req.session?.isAdmin) {
+        return res.status(403).json({ error: 'Forbidden' })
+    }
+    next();
+}
+
+//Protecting admin API routes
+app.use('/api/admin', isAdmin);
+
+//Brand Admin Routes
+app.post('/api/admin/brand', postBrand);
+app.put('/api/admin/brand/:id', putBrand);
+app.delete('/api/admin/brand/:id', deleteBrand);
+
+//Console Admin Routes
+app.post('/api/admin/console', postConsole);
+app.put('/api/admin/console:id', putConsole);
+app.delete('/api/admin/console:id', deleteConsole);
+
+//Product Admin Routes
+app.post('/api/admin/product', putProduct);
+app.put('/api/admin/product/:id', postProduct);
+app.delete('/api/admin/product/:id', deleteProduct);
 
 //React site and asset route handling
 
