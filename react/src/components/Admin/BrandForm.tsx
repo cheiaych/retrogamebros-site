@@ -1,6 +1,12 @@
 import { FC, useState, useEffect, FormEvent } from 'react';
-import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
-import Brand from '../Brand/Brand';
+import { Container, Row, Col, Form, Button, InputGroup, Image } from 'react-bootstrap';
+
+interface Brand {
+  id: number;
+  name: string; 
+  img: string;
+  isOther: number;
+}
 
 interface BrandFormProps {}
 
@@ -42,7 +48,10 @@ const BrandForm: FC<BrandFormProps> = () => {
                 <Col>
                     <Row>
                         {brands.map((brand) => (
-                            <Brand brand={brand}></Brand>
+                            <span>
+                                <Image className='img-fluid' style={{ maxHeight: '30px'}} src={`/uploads/brands/${brand.img}`}></Image>
+                                {brand.id} {brand.name} {brand.isOther}
+                            </span> 
                         ))}
                     </Row>
                 </Col>

@@ -1,12 +1,19 @@
 import { FC, useState, useEffect, FormEvent } from 'react';
-import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
-import Console from '../Console/Console';
+import { Container, Row, Col, Form, Button, InputGroup, Image } from 'react-bootstrap';
+
+interface Console {
+  id: number;
+  name: string; 
+  brand: string;
+  img: string;
+  isCollectible: number;
+}
 
 interface ConsoleFormProps {}
 
 const ConsoleForm: FC<ConsoleFormProps> = () => {
-
-    let [consoles, setConsoles] = useState([]);
+    
+    let [consoles, setConsoles] = useState<Console[]>([]);
     let [consoleFormValues, setConsoleFormValues] = useState({
         id: -1,
         name: '',
@@ -23,7 +30,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                 setConsoles(data)
             })
         .catch((err) => console.error(`Could not fetch consoles`, err))
-    })
+    }, [])
 
     return (
         <>
@@ -48,7 +55,10 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                     <h1>ConsoleForm</h1>
                     <Row>
                         {consoles.map((console) => (
-                            <Console console={console}></Console>
+                            <span>
+                                <Image className='img-fluid' style={{ maxHeight: '30px'}} src={`/uploads/consoles/${console.brand.toLowerCase()}/${console.img}`}></Image>
+                                {console.id} {console.name} {console.brand} {console.isCollectible}
+                            </span>
                         ))}
                     </Row>
                 </Col>

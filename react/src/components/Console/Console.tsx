@@ -8,6 +8,7 @@ interface Console {
   name: string; 
   brand: string;
   img: string;
+  isCollectible: number;
 }
 
 interface ConsoleProps {
