@@ -4,14 +4,9 @@ import styles from './Navbar.module.css';
 import { Nav, Navbar, NavDropdown, Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
-interface NavbarProps {}
+import Brand from '../Brand/Brand';
 
-interface Brand {
-  id: number;
-  name: string;
-  img: string;
-  isOther: number;
-}
+interface NavbarProps {}
 
 const TopNavbar: FC<NavbarProps> = () => {
 
