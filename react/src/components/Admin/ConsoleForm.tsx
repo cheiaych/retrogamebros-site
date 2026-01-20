@@ -45,8 +45,12 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         });
     }
 
-    useEffect(() => {
+    function printConsole () {
         console.log (consoleFormValues)
+    }
+
+    useEffect(() => {
+        printConsole()
     }, [consoleFormValues])
 
     return (
@@ -54,31 +58,52 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
             <Row>
 
                 <Col>
-                    <Form.Label>ID</Form.Label>
-                    <Form.Control value={consoleFormValues.id} type='text' readOnly plaintext></Form.Control>
+                    <Form.Group as={Row}>
+                        <Form.Label column sm={2}>ID</Form.Label>
+                        <Col sm={10}><Form.Control value={consoleFormValues.id} type='text' readOnly plaintext></Form.Control></Col> 
+                    </Form.Group>
+                    
+                    <Form.Group as={Row}>
+                        <Form.Label column sm={2}>Name</Form.Label>
+                        <Col sm={10}><Form.Control value={consoleFormValues.name} type='text'></Form.Control></Col>
+                    </Form.Group>       
 
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control value={consoleFormValues.name} type='text'></Form.Control>
+                    <Form.Group as={Row}>
+                        <Form.Label column sm={2}>Brand</Form.Label>
+                        <Col sm={10}>
+                            <Form.Select value={consoleFormValues.brand}
+                                onChange = {e => setConsoleFormValues(c => ({
+                                        ...c,
+                                        brand: e.target.value
+                                    }))
+                                }>
+                                <option value=''>Select Brand...</option>
+                                {brands.map((b) => (
+                                    <option value={b.name}>{b.name}</option>
+                                ))}
+                            </Form.Select>
+                        </Col>
+                    </Form.Group>  
 
-                    <Form.Label>Brand</Form.Label>
-                    <Form.Select value={consoleFormValues.brand}
-                        onChange={e => 
-                            setConsoleFormValues(c => ({
-                                ...c,
-                                brand: e.target.value
-                            }))
-                        }>
-                        <option value=''>Select Brand...</option>
-                        {brands.map((b) => (
-                            <option value={b.name}>{b.name}</option>
-                        ))}
-                    </Form.Select>
+                    <Form.Group as={Row}>
+                        <Form.Label column sm={2}>Collectible?</Form.Label>
+                        <Col sm={10}>
+                            <Form.Check
+                                checked = {consoleFormValues.isCollectible === 1 ? true : false}
+                                onChange = {e => setConsoleFormValues(c => ({
+                                    ...c,
+                                    isCollectible: e.target.checked ? 1 : 0
+                                }))}
+                            ></Form.Check>
+                        </Col>
+                    </Form.Group>  
 
-                    <Form.Label>Image</Form.Label>
-                    <Form.Control type='file'></Form.Control>
+                    <Row>
+                        <Form.Label>Image</Form.Label>
+                        <Form.Control type='file'></Form.Control>
+                    </Row>
 
-                    <Form.Label>isCollectible</Form.Label>
-                    <Form.Check></Form.Check>
+                    <Button onClick={printConsole}>Submit</Button>
                 </Col>
 
                 <Col>
