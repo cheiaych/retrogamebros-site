@@ -256,13 +256,6 @@ app.get('/api/search', async function (req, res){
     }
 })
 
-/*app.get('/api/products/Nintendo', async function (req, res){
-    let db = await getDBConnection();
-    let products = await db.all('SELECT * FROM Products WHERE brand = "Nintendo"');
-    await db.close();
-    return res.json(products);
-})*/
-
 //Non-search routes with params instead of queries
 app.get('/api/brands', async function (req, res){
     try {

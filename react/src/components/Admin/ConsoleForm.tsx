@@ -74,7 +74,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         });
 
         console.log('Fetching consoles')
-        fetchConsoles();
+        fetchConsoles()
     }
 
     function deleteConsole () {
