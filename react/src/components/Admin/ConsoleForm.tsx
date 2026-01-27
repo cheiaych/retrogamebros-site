@@ -108,10 +108,9 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
 
                 <Col>
                     <Row>
-                        <Container style={{maxWidth: '30vw', maxHeight: '50vh', overflowY: 'auto'}}>
+                        <Container style={{maxWidth: '30vw', maxHeight: '80vh', overflowY: 'auto'}}>
                             {consoles.map((c) => (
-                                <Row onClick={() => loadConsole(c)}>
-                                    <Col>{c.id}</Col>
+                                <Row key={c.id.toString()} onClick={() => {loadConsole(c)}}>
                                     <Col>{c.name}</Col>
                                     <Col>{c.brand}</Col>
                                     <Col>{c.isCollectible}</Col>

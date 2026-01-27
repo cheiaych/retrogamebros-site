@@ -20,6 +20,7 @@
     "express": "^4.19.2",
     "express-session": "^1.18.2",
     "fs-extra": "^11.3.2",
+    "react-scripts": "^5.0.1",
     "sequelize": "^6.37.3",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
