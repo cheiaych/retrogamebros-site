@@ -17,6 +17,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         isCollectible: 0
     });
     let [brands, setBrands] = useState<Brand[]>([]);
+    let [selectedConsole, setSelectedConsole] = useState<number>(-1);
 
     useEffect(() => {
         console.log(`/api/consoles`)
@@ -45,86 +46,106 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         });
     }
 
+    function newConsole () {
+
+    }
+
+    function saveConsole () {
+        console.log (consoleFormValues)
+    }
+
+    function deleteConsole () {
+
+    }
+
     function printConsole () {
         console.log (consoleFormValues)
     }
 
-    useEffect(() => {
-        printConsole()
-    }, [consoleFormValues])
-
     return (
         <>
             <Row>
+                <Col size={4}>
+                    <Container>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm={2}>ID</Form.Label>
+                            <Col sm={10}><Form.Control value={consoleFormValues.id} type='text' readOnly plaintext></Form.Control></Col> 
+                        </Form.Group>
+                        
+                        <Form.Group as={Row}>
+                            <Form.Label column sm={2}>Name</Form.Label>
+                            <Col sm={10}><Form.Control value={consoleFormValues.name} type='text'></Form.Control></Col>
+                        </Form.Group>       
 
-                <Col>
-                    <Form.Group as={Row}>
-                        <Form.Label column sm={2}>ID</Form.Label>
-                        <Col sm={10}><Form.Control value={consoleFormValues.id} type='text' readOnly plaintext></Form.Control></Col> 
-                    </Form.Group>
-                    
-                    <Form.Group as={Row}>
-                        <Form.Label column sm={2}>Name</Form.Label>
-                        <Col sm={10}><Form.Control value={consoleFormValues.name} type='text'></Form.Control></Col>
-                    </Form.Group>       
+                        <Form.Group as={Row}>
+                            <Form.Label column sm={2}>Brand</Form.Label>
+                            <Col sm={10}>
+                                <Form.Select value={consoleFormValues.brand}
+                                    onChange = {e => setConsoleFormValues(c => ({
+                                            ...c,
+                                            brand: e.target.value
+                                        }))
+                                    }>
+                                    <option value=''>Select Brand...</option>
+                                    {brands.map((b) => (
+                                        <option value={b.name}>{b.name}</option>
+                                    ))}
+                                </Form.Select>
+                            </Col>
+                        </Form.Group>  
 
-                    <Form.Group as={Row}>
-                        <Form.Label column sm={2}>Brand</Form.Label>
-                        <Col sm={10}>
-                            <Form.Select value={consoleFormValues.brand}
-                                onChange = {e => setConsoleFormValues(c => ({
+                        <Form.Group as={Row}>
+                            <Form.Label column sm={2}>Collectible?</Form.Label>
+                            <Col sm={10}>
+                                <Form.Check
+                                    checked = {consoleFormValues.isCollectible === 1 ? true : false}
+                                    onChange = {e => setConsoleFormValues(c => ({
                                         ...c,
-                                        brand: e.target.value
-                                    }))
-                                }>
-                                <option value=''>Select Brand...</option>
-                                {brands.map((b) => (
-                                    <option value={b.name}>{b.name}</option>
-                                ))}
-                            </Form.Select>
-                        </Col>
-                    </Form.Group>  
+                                        isCollectible: e.target.checked ? 1 : 0
+                                    }))}
+                                ></Form.Check>
+                            </Col>
+                        </Form.Group>  
 
-                    <Form.Group as={Row}>
-                        <Form.Label column sm={2}>Collectible?</Form.Label>
-                        <Col sm={10}>
-                            <Form.Check
-                                checked = {consoleFormValues.isCollectible === 1 ? true : false}
-                                onChange = {e => setConsoleFormValues(c => ({
-                                    ...c,
-                                    isCollectible: e.target.checked ? 1 : 0
-                                }))}
-                            ></Form.Check>
-                        </Col>
-                    </Form.Group>  
-
-                    <Row>
-                        <Form.Label>Image</Form.Label>
-                        <Form.Control type='file'></Form.Control>
-                    </Row>
-
-                    <Button onClick={printConsole}>Submit</Button>
+                        <Form.Group as={Row}>
+                            <Col sm={10}>
+                                <Form.Label>Image</Form.Label>
+                                <Form.Control type='file'></Form.Control>
+                            </Col>
+                        </Form.Group>
+                        
+                        <Form.Group as={Row}>
+                            <Col sm={10}>
+                                <Button onClick={newConsole}>New Console</Button>
+                                <Button onClick={saveConsole}>Save Console</Button>
+                                {/*<Button onClick={printConsole}>Delete Console</Button>*/}
+                            </Col>
+                        </Form.Group>
+                    </Container>
                 </Col>
 
-                <Col>
-                    <Row>
-                        <Container style={{maxWidth: '30vw', maxHeight: '80vh', overflowY: 'auto'}}>
-                            {consoles.map((c) => (
-                                <Row key={c.id.toString()} onClick={() => {loadConsole(c)}}>
-                                    <Col>{c.name}</Col>
-                                    <Col>{c.brand}</Col>
-                                    <Col>{c.isCollectible}</Col>
-                                    <Col>{c.img? (
-                                        <Image className='img-fluid' style={{ maxHeight: '30px'}} src={`/uploads/consoles/${c.brand.toLowerCase()}/${c.img}`}></Image>
-                                    ) : (
-                                        <></>
-                                    )}</Col>
-                                </Row>  
-                            ))}
-                        </Container>
-                    </Row>
+                <Col size={4}>
+                    <Container style={{maxHeight: '70vh', overflowY: 'auto'}}>
+                        {consoles.map((c) => (
+                            <Row 
+                            key={c.id.toString()} 
+                            onClick={() => {
+                                setSelectedConsole(c.id)
+                                loadConsole(c)
+                                }}
+                            style={{backgroundColor: selectedConsole === c.id ? '#8d8d8d' : 'transparent'}}>
+                                <Col>{c.name}</Col>
+                                <Col>{c.brand}</Col>
+                                <Col>{c.isCollectible}</Col>
+                                <Col>{c.img? (
+                                    <Image className='img-fluid' style={{ maxHeight: '30px'}} src={`/uploads/consoles/${c.brand.toLowerCase()}/${c.img}`}></Image>
+                                ) : (
+                                    <></>
+                                )}</Col>
+                            </Row>  
+                        ))}
+                    </Container>
                 </Col>
-
             </Row>
         </>
     )
