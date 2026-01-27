@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
 import dotenv from 'dotenv';
+import multer from 'multer';
 
 import { open } from 'sqlite'
 import sqlite3 from 'sqlite3'
@@ -197,8 +198,24 @@ async function postConsole() {
     
 }
 
-async function putConsole(id) {
-    
+async function putConsole(req, res) {
+    console.log(req.body.name)
+
+    const id = req.params.id;
+    const name = req.body.name;
+    const brand = req.body.brand;
+    const img = req.body.img;
+    const isCollectible = req.body.isCollectible === '1' ? 1 : 0;
+
+    let db = await getDBConnection();
+
+    let query = `UPDATE Consoles SET name = ?, brand = ?, img = ?, isCollectible = ? WHERE id = ?`;
+    const params = [name, brand, img, isCollectible, id];
+
+    await db.run(query, params);
+    await db.close()
+
+    res.status(204).json({ ok: true });
 }
 
 async function deleteConsole(id) {
@@ -230,32 +247,61 @@ function sanitizeInput(input, maxLength = 100) {
 //API Routes
 //Search routes first to avoid conflict with :brand
 app.get('/api/search', async function (req, res){
-    //return getAllProducts(req, res)
-    return searchProducts(req, res);
+    try {
+        return searchProducts(req, res);
+    }
+    catch (e) {
+        console.error('Could not fetch search: ', e);
+        return res.status(500).json({ error: 'Could not fetch brands' });
+    }
 })
 
-app.get('/api/products/Nintendo', async function (req, res){
+/*app.get('/api/products/Nintendo', async function (req, res){
     let db = await getDBConnection();
     let products = await db.all('SELECT * FROM Products WHERE brand = "Nintendo"');
     await db.close();
     return res.json(products);
-})
+})*/
 
 //Non-search routes with params instead of queries
 app.get('/api/brands', async function (req, res){
-    return getAllBrands(req, res);
+    try {
+        await getAllBrands(req, res);
+    }
+    catch (e) {
+        console.error(`Could not fetch products for search ${sanitizeInput(req.query.name)}: `, e);
+        res.status(500).json({ error: `Could not fetch products for search ${sanitizeInput(req.query.name)}` });
+    }
 })
 
 app.get('/api/consoles', async function (req, res){
-    return getAllConsoles(req, res);
+    try {
+        await getAllConsoles(req, res);
+    }
+    catch (e) {
+        console.error('Could not fetch consoles: ', e);
+        res.status(500).json({ error: 'Could not fetch consoles' });
+    }
 })
 
 app.get('/api/:brand', async function (req, res){
-    return getConsolesByBrand(req, res);
+    try {
+        await getConsolesByBrand(req, res);
+    }
+    catch (e) {
+        console.error(`Could not fetch consoles for brand ${sanitizeInput(req.params.brand)}: `, e);
+        res.status(500).json({ error: `Could not fetch consoles for brand ${sanitizeInput(req.params.brand)}` });
+    }
 })
 
 app.get('/api/:brand/:console', async function (req, res){
-    return getProductsByConsole(req, res);
+    try {
+        await getProductsByConsole(req, res);
+    }
+    catch (e) {
+        console.error(`Could not fetch products for console ${sanitizeInput(req.params.console)}: `, e);
+        res.status(500).json({ error: `Could not fetch products for console ${sanitizeInput(req.params.console)}` });
+    }
 })
 
 //Auth routing
@@ -276,7 +322,7 @@ app.post('/admin/login', async (req, res) => {
     )
 
     if (!isPassword) {
-        return res.status(403).json({ error: 'Forbidden' })
+        res.status(403).json({ error: 'Forbidden' })
     }
 
     req.session.isAdmin = true;
@@ -285,13 +331,16 @@ app.post('/admin/login', async (req, res) => {
 
 function isAdmin (req, res, next) {
     if (!req.session?.isAdmin) {
-        return res.status(403).json({ error: 'Forbidden' })
+        res.status(403).json({ error: 'Forbidden' })
     }
     next();
 }
 
 //Protecting admin API routes
 app.use('/api/admin', isAdmin);
+
+//Multer setup for image uploads
+const upload = multer({dest: 'temp/'});
 
 //Brand Admin Routes
 app.post('/api/admin/brand', postBrand);
@@ -300,8 +349,19 @@ app.delete('/api/admin/brand/:id', deleteBrand);
 
 //Console Admin Routes
 app.post('/api/admin/console', postConsole);
-app.put('/api/admin/console:id', putConsole);
-app.delete('/api/admin/console:id', deleteConsole);
+
+app.put('/api/admin/console/:id', upload.none(), async function (req, res) {
+    console.log(req.body)
+    try {
+        await putConsole(req, res);
+    }
+    catch (e) {
+        console.error(`Could not update console ${sanitizeInput(req.params.id)}: `, e);
+        res.status(500).json({ error: `Could not update console ${sanitizeInput(req.params.id)}` });
+    }
+});
+
+app.delete('/api/admin/console/:id', deleteConsole);
 
 //Product Admin Routes
 app.post('/api/admin/product', putProduct);

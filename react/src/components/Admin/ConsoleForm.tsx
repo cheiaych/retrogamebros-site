@@ -19,21 +19,28 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
     let [brands, setBrands] = useState<Brand[]>([]);
     let [selectedConsole, setSelectedConsole] = useState<number>(-1);
 
-    useEffect(() => {
+    async function fetchConsoles() {
         console.log(`/api/consoles`)
-        fetch(`/api/consoles`)
+        await fetch(`/api/consoles`)
             .then((res) => res.json())
             .then((data) => {
                 setConsoles(data)
             })
         .catch((err) => console.error(`Could not fetch consoles`, err))
+    }
 
-        fetch('/api/brands')
+    async function fetchBrands() {
+        await fetch('/api/brands')
             .then((res) => res.json())
             .then((data) => {
                 setBrands(data)
             })
         .catch((err) => console.error("Could not Fetch Brands: ", err))
+    }
+
+    useEffect(() => {
+        fetchConsoles();
+        fetchBrands();
     }, [])
 
     function loadConsole (c: Console) {
@@ -41,7 +48,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
             id: c.id,
             name: c.name,
             brand: c.brand,
-            img: `/uploads/consoles/${c.brand.toLowerCase()}/${c.img}`,
+            img: c.img,
             isCollectible: c.isCollectible
         });
     }
@@ -50,8 +57,24 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
 
     }
 
-    function saveConsole () {
-        console.log (consoleFormValues)
+    async function saveConsole () {
+        console.log(consoleFormValues.name)
+
+        const formData = new FormData();
+
+        formData.append('name', consoleFormValues.name);
+        formData.append('brand', consoleFormValues.brand);
+        formData.append('img', consoleFormValues.img);
+        formData.append('isCollectible', String(consoleFormValues.isCollectible));
+
+        console.log (formData)
+        await fetch(`/api/admin/console/${consoleFormValues.id}`, {
+            method: 'PUT',
+            body: formData
+        });
+
+        console.log('Fetching consoles')
+        fetchConsoles();
     }
 
     function deleteConsole () {
@@ -65,7 +88,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
     return (
         <>
             <Row>
-                <Col size={4}>
+                <Col sm={6}>
                     <Container>
                         <Form.Group as={Row}>
                             <Form.Label column sm={2}>ID</Form.Label>
@@ -74,7 +97,15 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                         
                         <Form.Group as={Row}>
                             <Form.Label column sm={2}>Name</Form.Label>
-                            <Col sm={10}><Form.Control value={consoleFormValues.name} type='text'></Form.Control></Col>
+                            <Col sm={10}>
+                                <Form.Control value={consoleFormValues.name} 
+                                    onChange={e => setConsoleFormValues(c => ({
+                                                ...c,
+                                                name: e.target.value
+                                            }))} 
+                                    type='text'>
+                                </Form.Control>
+                            </Col>
                         </Form.Group>       
 
                         <Form.Group as={Row}>
@@ -96,8 +127,8 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
 
                         <Form.Group as={Row}>
                             <Form.Label column sm={2}>Collectible?</Form.Label>
-                            <Col sm={10}>
-                                <Form.Check
+                            <Col sm={10} className='align-self-center'>
+                                <Form.Check 
                                     checked = {consoleFormValues.isCollectible === 1 ? true : false}
                                     onChange = {e => setConsoleFormValues(c => ({
                                         ...c,
@@ -110,15 +141,15 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                         <Form.Group as={Row}>
                             <Col sm={10}>
                                 <Form.Label>Image</Form.Label>
-                                <Form.Control type='file'></Form.Control>
+                                <Form.Control type='file' accept='image/*'></Form.Control>
                             </Col>
                         </Form.Group>
                         
                         <Form.Group as={Row}>
                             <Col sm={10}>
-                                <Button onClick={newConsole}>New Console</Button>
+                                <Button onClick={newConsole} disabled>New Console</Button>
                                 <Button onClick={saveConsole}>Save Console</Button>
-                                {/*<Button onClick={printConsole}>Delete Console</Button>*/}
+                                <Button onClick={printConsole} disabled>Delete Console</Button>
                             </Col>
                         </Form.Group>
                     </Container>
