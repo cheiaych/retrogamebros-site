@@ -185,8 +185,21 @@ async function postBrand() {
     
 }
 
-async function putBrand(id) {
-    
+async function putBrand(req, res) {
+    console.log(req.body.name);
+
+    const id = req.params.id;
+    const name = req.body.name;
+    const img = req.body.img;
+    const isOther = req.body.isOther === '1' ? 1 : 0;
+
+    let db = await getDBConnection();
+
+    let query = `UPDATE Brands SET name = ?, img = ?, isOther = ? WHERE id = ?`
+    const params = [name, img, isOther, id];
+
+    await db.run(query, params);
+    await db.close();
 }
 
 async function deleteBrand(id) {
@@ -214,8 +227,6 @@ async function putConsole(req, res) {
 
     await db.run(query, params);
     await db.close()
-
-    res.status(204).json({ ok: true });
 }
 
 async function deleteConsole(id) {
@@ -324,7 +335,7 @@ app.post('/admin/login', async (req, res) => {
 
 function isAdmin (req, res, next) {
     if (!req.session?.isAdmin) {
-        res.status(403).json({ error: 'Forbidden' })
+        return res.status(403).json({ error: 'Forbidden' })
     }
     next();
 }
@@ -337,7 +348,19 @@ const upload = multer({dest: 'temp/'});
 
 //Brand Admin Routes
 app.post('/api/admin/brand', postBrand);
-app.put('/api/admin/brand/:id', putBrand);
+
+app.put('/api/admin/brand/:id', upload.none(), async function (req, res) {
+    console.log(req.body);
+    try {
+        await putBrand(req, res);
+        res.status(204).json({ ok: true });
+    }
+    catch (e) {
+        console.error(`Could not update brand ${sanitizeInput(req.params.id)}: `, e);
+        res.status(500).json({ error: `Could not update brand ${sanitizeInput(req.params.id)}` });
+    }
+});
+
 app.delete('/api/admin/brand/:id', deleteBrand);
 
 //Console Admin Routes
@@ -347,6 +370,7 @@ app.put('/api/admin/console/:id', upload.none(), async function (req, res) {
     console.log(req.body)
     try {
         await putConsole(req, res);
+        res.status(204).json({ ok: true });
     }
     catch (e) {
         console.error(`Could not update console ${sanitizeInput(req.params.id)}: `, e);
