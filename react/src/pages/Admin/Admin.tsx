@@ -9,18 +9,18 @@ import ConsoleForm from '../../components/Admin/ConsoleForm';
 function Admin () {
 
     const [authorized, setAuthorized] = useState(false);
-    const [showLogin, setShowLogin] = useState(false);
+    const [showLogin, setShowLogin] = useState(true);
 
     const [error, setError] = useState('');
 
     useEffect(() => {
+        /*setAuthorized(true)
+        setShowLogin(false)*/
         fetch('/admin/check')
         .then(res => {
             if (res.ok) {
                 setAuthorized(true)
-            }
-            else {
-                setShowLogin(true)
+                setShowLogin(false)
             }
         })
     }, []);
