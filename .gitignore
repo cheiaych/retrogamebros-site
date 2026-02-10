@@ -3,3 +3,4 @@ react/build
 express/node_modules
 express/react/build
 express/.env
+express/scripts/password-gen.js
