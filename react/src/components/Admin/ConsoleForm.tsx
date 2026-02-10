@@ -74,7 +74,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         });
 
         console.log('Fetching consoles')
-        fetchConsoles()
+        fetchConsoles();
     }
 
     function deleteConsole () {
@@ -157,17 +157,23 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
 
                 <Col size={4}>
                     <Container style={{maxHeight: '70vh', overflowY: 'auto'}}>
+                        <Row>
+                            <Col><b>Console</b></Col>
+                            <Col><b>Brand</b></Col>
+                            <Col><b>Collectible?</b></Col>
+                            <Col><b>Image</b></Col>
+                        </Row>
                         {consoles.map((c) => (
                             <Row 
                             key={c.id.toString()} 
                             onClick={() => {
                                 setSelectedConsole(c.id)
                                 loadConsole(c)
-                                }}
+                            }}
                             style={{backgroundColor: selectedConsole === c.id ? '#8d8d8d' : 'transparent'}}>
                                 <Col>{c.name}</Col>
                                 <Col>{c.brand}</Col>
-                                <Col>{c.isCollectible}</Col>
+                                <Col>{c.isCollectible == 1 ? 'Yes' : 'No' }</Col>
                                 <Col>{c.img? (
                                     <Image className='img-fluid' style={{ maxHeight: '30px'}} src={`/uploads/consoles/${c.brand.toLowerCase()}/${c.img}`}></Image>
                                 ) : (
