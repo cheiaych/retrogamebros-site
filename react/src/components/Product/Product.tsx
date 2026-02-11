@@ -7,7 +7,9 @@ interface Product {
   name: string; 
   price: number; 
   brand: string;
+  brandId: string;
   console: string; 
+  consoleId: string;
   productType: string; 
   description: string; 
   condition: string; 

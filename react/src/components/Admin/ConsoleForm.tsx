@@ -13,6 +13,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         id: -1,
         name: '',
         brand: '',
+        brandId: '',
         img: '',
         isCollectible: 0
     });
@@ -24,6 +25,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         await fetch(`/api/consoles`)
             .then((res) => res.json())
             .then((data) => {
+                console.log(data)
                 setConsoles(data)
             })
         .catch((err) => console.error(`Could not fetch consoles`, err))
@@ -48,6 +50,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
             id: c.id,
             name: c.name,
             brand: c.brand,
+            brandId: c.brandId,
             img: c.img,
             isCollectible: c.isCollectible
         });
@@ -63,7 +66,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         const formData = new FormData();
 
         formData.append('name', consoleFormValues.name);
-        formData.append('brand', consoleFormValues.brand);
+        formData.append('brand', consoleFormValues.brandId);
         formData.append('img', consoleFormValues.img);
         formData.append('isCollectible', String(consoleFormValues.isCollectible));
 
@@ -111,15 +114,15 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                         <Form.Group as={Row}>
                             <Form.Label column sm={2}>Brand</Form.Label>
                             <Col sm={10}>
-                                <Form.Select value={consoleFormValues.brand}
+                                <Form.Select value={consoleFormValues.brandId}
                                     onChange = {e => setConsoleFormValues(c => ({
                                             ...c,
-                                            brand: e.target.value
+                                            brandId: e.target.value
                                         }))
                                     }>
                                     <option value=''>Select Brand...</option>
                                     {brands.map((b) => (
-                                        <option value={b.name}>{b.name}</option>
+                                        <option value={b.id}>{b.name}</option>
                                     ))}
                                 </Form.Select>
                             </Col>
@@ -170,14 +173,14 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                                 setSelectedConsole(c.id)
                                 loadConsole(c)
                             }}
-                            style={{backgroundColor: selectedConsole === c.id ? '#8d8d8d' : 'transparent'}}>
+                            style={{height: '40px', justifyContent: 'center', backgroundColor: selectedConsole === c.id ? '#8d8d8d' : 'transparent'}}>
                                 <Col>{c.name}</Col>
                                 <Col>{c.brand}</Col>
                                 <Col>{c.isCollectible == 1 ? 'Yes' : 'No' }</Col>
                                 <Col>{c.img? (
-                                    <Image className='img-fluid' style={{ maxHeight: '30px'}} src={`/uploads/consoles/${c.brand.toLowerCase()}/${c.img}`}></Image>
+                                    <Image className='img-fluid' style={{ height: '30px'}} src={`/uploads/consoles/${c.brand.toLowerCase()}/${c.img}`}></Image>
                                 ) : (
-                                    <></>
+                                    <div style={{ width: '30px', height: '30px' }}></div>
                                 )}</Col>
                             </Row>  
                         ))}

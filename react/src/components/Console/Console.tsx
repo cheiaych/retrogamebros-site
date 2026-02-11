@@ -7,6 +7,7 @@ interface Console {
   id: number;
   name: string; 
   brand: string;
+  brandId: string;
   img: string;
   isCollectible: number;
 }

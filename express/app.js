@@ -41,7 +41,12 @@ async function getAllBrands(req, res) {
 
 async function getAllConsoles(req, res) {
     let db = await getDBConnection();
-    let consoles = await db.all('SELECT * FROM Consoles ORDER BY name');
+
+    let query = 'SELECT c.id, c.name, b.name as brand, b.id AS brandId, c.img, c.isCollectible ';
+    query += 'FROM Consoles AS c JOIN Brands AS b ON c.brand = b.id ';
+    query += 'ORDER BY c.name';
+
+    let consoles = await db.all(query);
     await db.close();
     return res.json(consoles);
 }
@@ -51,12 +56,13 @@ async function getConsolesByBrand(req, res) {
     
     let db = await getDBConnection();
 
-    let query = 'SELECT * FROM Consoles';
+    let query = 'SELECT c.id, c.name, b.name as brand, b.id AS brandId, c.img, c.isCollectible ';
+    query += 'FROM Consoles AS c JOIN Brands AS b ON c.brand = b.id';
     let conditions = [];
     let params = [];
 
     if (brand) {
-        conditions.push('brand = ?');
+        conditions.push('b.name = ?');
         params.push(brand);
     }
 
@@ -64,7 +70,7 @@ async function getConsolesByBrand(req, res) {
         query += ' WHERE ' + conditions.join(' AND ');
     }
 
-    conditions.push('ORDER BY name');
+    conditions.push('ORDER BY c.name');
 
     let consoles = await db.all(query, params);
     await db.close()
@@ -79,16 +85,17 @@ async function getProductsByConsole(req, res) {
     
     let db = await getDBConnection();
 
-    let query = 'SELECT * FROM Products';
+    let query = 'SELECT p.id, p.name, p.price, b.name as brand, b.id AS brandId, c.name AS console, c.id AS consoleId, p.productType, p.description, p.condition, p.inStock, p.img ';
+    query += 'FROM Products AS p JOIN Brands AS b on p.brand = b.id JOIN Consoles AS c ON p.console = c.id'
     let conditions = [];
     let params = [];
 
     if (brand) {
-        conditions.push('brand = ?');
+        conditions.push('b.name = ?');
         params.push(brand);
     }
     if (console) {
-        conditions.push('console = ?');
+        conditions.push('c.name = ?');
         params.push(console);
     }
 
@@ -96,7 +103,7 @@ async function getProductsByConsole(req, res) {
         query += ' WHERE ' + conditions.join(' AND ');
     }
 
-    query += (' ORDER BY productType, name');
+    query += (' ORDER BY p.productType, p.name');
 
     let products = await db.all(query, params);
     await db.close()
@@ -151,7 +158,8 @@ async function searchProducts(req, res) {
     
     let db = await getDBConnection();
 
-    let query = 'SELECT * FROM Products';
+    let query = 'SELECT p.id, p.name, p.price, b.name AS brand, b.id AS brandID, c.name AS console, c.id AS consoleId, p.productType, p.description, p.condition, p.inStock, p.img ';
+    query += 'FROM Products AS p JOIN Brands AS b on p.brand = b.id JOIN Consoles AS c ON p.console = c.id'
     let conditions = [];
     let params = [];
 
@@ -161,17 +169,17 @@ async function searchProducts(req, res) {
     conditions.push('console LIKE ?');
     params.push(`%${search}%`);*/
 
-    conditions.push('name LIKE ?');
+    conditions.push('p.name LIKE ?');
     params.push(`%${search}%`);
 
-    conditions.push('description LIKE ?');
+    conditions.push('p.description LIKE ?');
     params.push(`%${search}%`);
 
     if (conditions.length) {
         query += ' WHERE ' + conditions.join(' OR ');
     }
 
-    conditions.push('ORDER BY brand, console, productType, name')
+    conditions.push('ORDER BY b.name, c.name, p.productType, p.name')
 
     let products = await db.all(query, params);
     await db.close()
