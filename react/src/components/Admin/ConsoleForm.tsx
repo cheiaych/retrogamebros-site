@@ -19,6 +19,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
     });
     let [brands, setBrands] = useState<Brand[]>([]);
     let [selectedConsole, setSelectedConsole] = useState<number>(-1);
+    let [file, setFile] = useState <File | null>(null)
 
     async function fetchConsoles() {
         console.log(`/api/consoles`)
@@ -45,6 +46,12 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         fetchBrands();
     }, [])
 
+    function fileChange (e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.files && e.target.files.length > 0) {
+            setFile(e.target.files[0])
+        }
+    }
+
     function loadConsole (c: Console) {
         setConsoleFormValues({
             id: c.id,
@@ -68,6 +75,9 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         formData.append('name', consoleFormValues.name);
         formData.append('brand', consoleFormValues.brandId);
         formData.append('img', consoleFormValues.img);
+        if (file) {
+            formData.append('imageFile', file);
+        };
         formData.append('isCollectible', String(consoleFormValues.isCollectible));
 
         console.log (formData)
@@ -144,7 +154,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                         <Form.Group as={Row}>
                             <Col sm={10}>
                                 <Form.Label>Image</Form.Label>
-                                <Form.Control type='file' accept='image/*'></Form.Control>
+                                <Form.Control type='file' accept='image/*' onChange={fileChange}></Form.Control>
                             </Col>
                         </Form.Group>
                         

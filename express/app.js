@@ -354,6 +354,17 @@ app.use('/api/admin', isAdmin);
 //Multer setup for image uploads
 const upload = multer({dest: 'temp/'});
 
+const consoleImgStorage = multer.diskStorage({
+    destination: function(req, res, cb) {
+        cb(null, './uploads/consoles')
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname);
+        cb(null, `${req.params.id}${ext}`)
+    }
+})
+const uploadConsoleImg = multer({storage: consoleImgStorage});
+
 //Brand Admin Routes
 app.post('/api/admin/brand', postBrand);
 
@@ -374,7 +385,7 @@ app.delete('/api/admin/brand/:id', deleteBrand);
 //Console Admin Routes
 app.post('/api/admin/console', postConsole);
 
-app.put('/api/admin/console/:id', upload.none(), async function (req, res) {
+app.put('/api/admin/console/:id', uploadConsoleImg.single('imageFile'), async function (req, res) {
     console.log(req.body)
     try {
         await putConsole(req, res);
