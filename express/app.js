@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import session from 'express-session';
 import dotenv from 'dotenv';
 import multer from 'multer';
+import fs from 'fs/promises';
 
 import { open } from 'sqlite'
 import sqlite3 from 'sqlite3'
@@ -215,23 +216,62 @@ async function deleteBrand(id) {
 }
 
 //Consoles
-async function postConsole() {
-    
-}
+async function postConsole(req, res) {
+    console.log(req.body)
 
-async function putConsole(req, res) {
-    console.log(req.body.name)
-
-    const id = req.params.id;
     const name = req.body.name;
     const brand = req.body.brand;
-    const img = req.body.img;
     const isCollectible = req.body.isCollectible === '1' ? 1 : 0;
 
     let db = await getDBConnection();
 
-    let query = `UPDATE Consoles SET name = ?, brand = ?, img = ?, isCollectible = ? WHERE id = ?`;
-    const params = [name, brand, img, isCollectible, id];
+    let query, params
+
+    query = `INSERT INTO Consoles (name, brand, isCollectible) VALUES (?, ?, ?)`;
+    params = [name, brand, isCollectible];
+    
+    const result = await db.run(query, params);
+    const id = result.lastID;
+    
+    if (req.file) { 
+        const img = `${id}${path.extname(req.file.filename)}`;
+
+        query = `UPDATE Consoles SET img = ? WHERE id = ?`;
+        params = [img, id];
+
+        await db.run(query, params)
+    }
+
+    await db.close();
+    return id;
+}
+
+async function putConsole(req, res) {
+    console.log(req.body)
+
+    const id = req.params.id;
+    const name = req.body.name;
+    const brand = req.body.brand;
+
+    let img = '';
+    if (req.file) { 
+        img = `${id}${path.extname(req.file.filename)}`;
+    }
+
+    const isCollectible = req.body.isCollectible === '1' ? 1 : 0;
+
+    let db = await getDBConnection();
+
+    let query, params
+    if (img) {
+        query = `UPDATE Consoles SET name = ?, brand = ?, img = ?, isCollectible = ? WHERE id = ?`;
+        params = [name, brand, img, isCollectible, id];
+    }
+    else {
+        query = `UPDATE Consoles SET name = ?, brand = ?, isCollectible = ? WHERE id = ?`;
+        params = [name, brand, isCollectible, id];
+    }
+    
 
     await db.run(query, params);
     await db.close()
@@ -317,7 +357,6 @@ app.get('/api/:brand/:console', async function (req, res){
 })
 
 //Auth routing
-
 app.get ('/admin/check', (req, res) => {
     if (!req.session?.isAdmin) {
         return res.status(403).json({ error: 'Forbidden' })
@@ -360,7 +399,7 @@ const consoleImgStorage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const ext = path.extname(file.originalname);
-        cb(null, `${req.params.id}${ext}`)
+        cb(null, `${crypto.randomUUID()}}${ext}`)
     }
 })
 const uploadConsoleImg = multer({storage: consoleImgStorage});
@@ -372,7 +411,10 @@ app.put('/api/admin/brand/:id', upload.none(), async function (req, res) {
     console.log(req.body);
     try {
         await putBrand(req, res);
-        res.status(204).json({ ok: true });
+        if (req.file) {
+            
+        }
+        res.status(200).json({ ok: true });
     }
     catch (e) {
         console.error(`Could not update brand ${sanitizeInput(req.params.id)}: `, e);
@@ -383,13 +425,29 @@ app.put('/api/admin/brand/:id', upload.none(), async function (req, res) {
 app.delete('/api/admin/brand/:id', deleteBrand);
 
 //Console Admin Routes
-app.post('/api/admin/console', postConsole);
+app.post('/api/admin/console', uploadConsoleImg.single('imageFile'), async function (req, res) {
+    console.log(req.body)
+    try {
+        let id = await postConsole(req, res);
+        if (req.file) {
+            await fs.rename(req.file.path, `./uploads/consoles/${id}${path.extname(req.file.filename)}`);
+        }
+        res.status(200).json({ ok: true });
+    }
+    catch (e) {
+        console.error(`Could not post console ${sanitizeInput(req.params.name)}: `, e);
+        res.status(500).json({ error: `Could not post console ${sanitizeInput(req.params.name)}` });
+    }
+});
 
 app.put('/api/admin/console/:id', uploadConsoleImg.single('imageFile'), async function (req, res) {
     console.log(req.body)
     try {
         await putConsole(req, res);
-        res.status(204).json({ ok: true });
+        if (req.file) {
+            await fs.rename(req.file.path, `./uploads/consoles/${req.params.id}${path.extname(req.file.filename)}`);
+        }
+        res.status(200).json({ ok: true });
     }
     catch (e) {
         console.error(`Could not update console ${sanitizeInput(req.params.id)}: `, e);

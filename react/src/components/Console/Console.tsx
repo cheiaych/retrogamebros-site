@@ -25,7 +25,7 @@ const Console: FC<ConsoleProps> = ({console}) => (
       {console.img ? (
         <Row className='pt-3 pb-4'>
           <Col className='text-center'>
-            <Image className='img-fluid' style={{ maxHeight: '30vh'}} src={`/uploads/consoles/${console.brand.toLowerCase()}/${console.img}`}></Image>
+            <Image className='img-fluid' style={{ maxHeight: '30vh'}} src={`/uploads/consoles/${console.img}`}></Image>
           </Col>
         </Row>
       ) : (

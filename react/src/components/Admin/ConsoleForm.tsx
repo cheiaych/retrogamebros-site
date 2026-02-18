@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, FormEvent } from 'react';
-import { Container, Row, Col, Form, Button, InputGroup, Image } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, InputGroup, Image, Table } from 'react-bootstrap';
 
 import Console from '../Console/Console';
 import Brand from '../Brand/Brand';
@@ -52,6 +52,15 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         }
     }
 
+    function validConsole () {
+        if (consoleFormValues.name !== '' && consoleFormValues.brandId !== '') {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     function loadConsole (c: Console) {
         setConsoleFormValues({
             id: c.id,
@@ -64,7 +73,14 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
     }
 
     function newConsole () {
-
+        setConsoleFormValues({
+            id: -1,
+            name: '',
+            brand: '',
+            brandId: '',
+            img: '',
+            isCollectible: 0
+        });
     }
 
     async function saveConsole () {
@@ -81,10 +97,18 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         formData.append('isCollectible', String(consoleFormValues.isCollectible));
 
         console.log (formData)
-        await fetch(`/api/admin/console/${consoleFormValues.id}`, {
-            method: 'PUT',
-            body: formData
-        });
+        if (consoleFormValues.id === -1) {
+            await fetch(`/api/admin/console`, {
+                method: 'POST',
+                body: formData
+            });
+        }
+        else {
+            await fetch(`/api/admin/console/${consoleFormValues.id}`, {
+                method: 'PUT',
+                body: formData
+            });
+        }
 
         console.log('Fetching consoles')
         fetchConsoles();
@@ -100,7 +124,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
 
     return (
         <>
-            <Row>
+            <Row className='mx-auto' style={{maxWidth: '60vw', justifyContent: 'center'}}>
                 <Col sm={6}>
                     <Container>
                         <Form.Group as={Row}>
@@ -160,16 +184,47 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                         
                         <Form.Group as={Row}>
                             <Col sm={10}>
-                                <Button onClick={newConsole} disabled>New Console</Button>
-                                <Button onClick={saveConsole}>Save Console</Button>
+                                <Button onClick={newConsole}>New Console</Button>
+                                <Button onClick={saveConsole} disabled={!validConsole()}>Save Console</Button>
                                 <Button onClick={printConsole} disabled>Delete Console</Button>
                             </Col>
                         </Form.Group>
                     </Container>
                 </Col>
 
-                <Col size={4}>
-                    <Container style={{maxHeight: '70vh', overflowY: 'auto'}}>
+                <Col size={6} style={{maxHeight: '70vh', overflowY: 'auto'}}>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th><b>Console</b></th>
+                                <th><b>Brand</b></th>
+                                <th><b>Collectible?</b></th>
+                                <th><b>Image</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {consoles.map((c) => (
+                            <tr 
+                            key={c.id.toString()} 
+                            onClick={() => {
+                                setSelectedConsole(c.id)
+                                loadConsole(c)
+                            }}
+                            style={{height: '40px', justifyContent: 'center', backgroundColor: selectedConsole === c.id ? '#8d8d8d' : 'transparent'}}
+                            className={selectedConsole === c.id ? 'table-active' : ''}>
+                                <td>{c.name}</td>
+                                <td>{c.brand}</td>
+                                <td>{c.isCollectible == 1 ? 'Yes' : 'No' }</td>
+                                <td>{c.img? (
+                                    <Image className='img-fluid' style={{ height: '30px'}} src={`/uploads/consoles/${c.img}`}></Image>
+                                ) : (
+                                    <div style={{ width: '30px', height: '30px' }}></div>
+                                )}</td>
+                            </tr>  
+                        ))}
+                        </tbody>
+                    </Table>
+                    {/*<Container style={{maxHeight: '70vh', overflowY: 'auto'}}>
                         <Row>
                             <Col><b>Console</b></Col>
                             <Col><b>Brand</b></Col>
@@ -194,7 +249,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                                 )}</Col>
                             </Row>  
                         ))}
-                    </Container>
+                    </Container>*/}
                 </Col>
             </Row>
         </>

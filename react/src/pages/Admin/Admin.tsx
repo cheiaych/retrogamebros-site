@@ -50,9 +50,9 @@ function Admin () {
     return (
         <>
             {showLogin && (
-                <div>
+                <div className='mx-auto' style={{maxWidth: '50vw', justifyContent:'center'}}>
                     <div>
-                        <h2>Admin Access</h2>
+                        <h2 style={{textAlign: 'center'}}>Admin Access</h2>
                         <Form onSubmit={adminLogin}>
                             <Row>
                                 <Col>
@@ -64,7 +64,7 @@ function Admin () {
                                     placeholder='Password'
                                     >  
                                     </Form.Control>
-                                    <Button type='submit'>Search</Button>
+                                    <Button type='submit'>Login</Button>
                                 </InputGroup>
                                 </Col>
                             </Row>
