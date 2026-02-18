@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, FormEvent } from 'react';
+import { FC, useState, useEffect, FormEvent, useRef } from 'react';
 import { Container, Row, Col, Form, Button, InputGroup, Image, Table } from 'react-bootstrap';
 
 import Console from '../Console/Console';
@@ -20,6 +20,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
     let [brands, setBrands] = useState<Brand[]>([]);
     let [selectedConsole, setSelectedConsole] = useState<number>(-1);
     let [file, setFile] = useState <File | null>(null)
+    const fileRef = useRef<HTMLInputElement | null>(null)
 
     async function fetchConsoles() {
         console.log(`/api/consoles`)
@@ -62,6 +63,8 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
     }
 
     function loadConsole (c: Console) {
+        setFile(null);
+        fileRef.current!.value = '';
         setConsoleFormValues({
             id: c.id,
             name: c.name,
@@ -73,6 +76,9 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
     }
 
     function newConsole () {
+        setSelectedConsole(-1);
+        setFile(null);
+        fileRef.current!.value = '';
         setConsoleFormValues({
             id: -1,
             name: '',
@@ -178,7 +184,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                         <Form.Group as={Row}>
                             <Col sm={10}>
                                 <Form.Label>Image</Form.Label>
-                                <Form.Control type='file' accept='image/*' onChange={fileChange}></Form.Control>
+                                <Form.Control type='file' accept='image/*' ref={fileRef} onChange={fileChange}></Form.Control>
                             </Col>
                         </Form.Group>
                         
@@ -210,13 +216,13 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                                 setSelectedConsole(c.id)
                                 loadConsole(c)
                             }}
-                            style={{height: '40px', justifyContent: 'center', backgroundColor: selectedConsole === c.id ? '#8d8d8d' : 'transparent'}}
+                            style={{height: '40px', justifyContent: 'center'}}
                             className={selectedConsole === c.id ? 'table-active' : ''}>
                                 <td>{c.name}</td>
                                 <td>{c.brand}</td>
-                                <td>{c.isCollectible == 1 ? 'Yes' : 'No' }</td>
+                                <td>{c.isCollectible === 1 ? 'Yes' : 'No' }</td>
                                 <td>{c.img? (
-                                    <Image className='img-fluid' style={{ height: '30px'}} src={`/uploads/consoles/${c.img}`}></Image>
+                                    <Image className='img-fluid' style={{ height: '30px'}} src={`/uploads/consoles/${c.img}?${crypto.randomUUID()}`}></Image>
                                 ) : (
                                     <div style={{ width: '30px', height: '30px' }}></div>
                                 )}</td>
@@ -224,32 +230,6 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                         ))}
                         </tbody>
                     </Table>
-                    {/*<Container style={{maxHeight: '70vh', overflowY: 'auto'}}>
-                        <Row>
-                            <Col><b>Console</b></Col>
-                            <Col><b>Brand</b></Col>
-                            <Col><b>Collectible?</b></Col>
-                            <Col><b>Image</b></Col>
-                        </Row>
-                        {consoles.map((c) => (
-                            <Row 
-                            key={c.id.toString()} 
-                            onClick={() => {
-                                setSelectedConsole(c.id)
-                                loadConsole(c)
-                            }}
-                            style={{height: '40px', justifyContent: 'center', backgroundColor: selectedConsole === c.id ? '#8d8d8d' : 'transparent'}}>
-                                <Col>{c.name}</Col>
-                                <Col>{c.brand}</Col>
-                                <Col>{c.isCollectible == 1 ? 'Yes' : 'No' }</Col>
-                                <Col>{c.img? (
-                                    <Image className='img-fluid' style={{ height: '30px'}} src={`/uploads/consoles/${c.brand.toLowerCase()}/${c.img}`}></Image>
-                                ) : (
-                                    <div style={{ width: '30px', height: '30px' }}></div>
-                                )}</Col>
-                            </Row>  
-                        ))}
-                    </Container>*/}
                 </Col>
             </Row>
         </>

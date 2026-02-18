@@ -45,7 +45,7 @@ async function getAllConsoles(req, res) {
 
     let query = 'SELECT c.id, c.name, b.name as brand, b.id AS brandId, c.img, c.isCollectible ';
     query += 'FROM Consoles AS c JOIN Brands AS b ON c.brand = b.id ';
-    query += 'ORDER BY c.name';
+    query += 'ORDER BY c.brand, c.id';
 
     let consoles = await db.all(query);
     await db.close();
@@ -188,7 +188,6 @@ async function searchProducts(req, res) {
 }
 
 //Admin DB calls
-
 //Brands
 async function postBrand() {
     
@@ -356,6 +355,9 @@ app.get('/api/:brand/:console', async function (req, res){
     }
 })
 
+//Routing for Uploads image serving
+app.use('/uploads', express.static('uploads'));
+
 //Auth routing
 app.get ('/admin/check', (req, res) => {
     if (!req.session?.isAdmin) {
@@ -387,11 +389,11 @@ function isAdmin (req, res, next) {
     next();
 }
 
-//Protecting admin API routes
+//Protecting admin API routes (app.use checks isAdmin() for ANY /api/admin route)
 app.use('/api/admin', isAdmin);
 
 //Multer setup for image uploads
-const upload = multer({dest: 'temp/'});
+const upload = multer({dest: '/'});
 
 const consoleImgStorage = multer.diskStorage({
     destination: function(req, res, cb) {
