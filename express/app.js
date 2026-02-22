@@ -190,7 +190,31 @@ async function searchProducts(req, res) {
 //Admin DB calls
 //Brands
 async function postBrand() {
+    console.log(req.body);
+
+    const name = req.body.name;
+    const isOther = req.body.isOther === '1' ? 1 : 0;
+
+    let db = await getDBConnection();
+
+    let query, params;
     
+    query = `INSERT INTO Brands (name, isOther) VALUES (?, ?)`;
+    params = [name, isOther];
+
+    const result = await db.run(query, params);
+    const id = result.lastID;
+
+    if (req.file) {
+        const img = `${id}${path.extname(req.file.filename)}`;
+        query = `UPDATE Brands SET img = ? WHERE id = ?`;
+        params = [img, id];
+
+        await db.run(query, params)
+    }
+
+    await db.close();
+    return id;
 }
 
 async function putBrand(req, res) {
@@ -198,13 +222,26 @@ async function putBrand(req, res) {
 
     const id = req.params.id;
     const name = req.body.name;
-    const img = req.body.img;
+
+    let img = '';
+    if (req.file) { 
+        img = `${id}${path.extname(req.file.filename)}`;
+    }
+
     const isOther = req.body.isOther === '1' ? 1 : 0;
 
     let db = await getDBConnection();
 
-    let query = `UPDATE Brands SET name = ?, img = ?, isOther = ? WHERE id = ?`
-    const params = [name, img, isOther, id];
+    let query, params;
+    if (img) {
+        query = `UPDATE Brands SET name = ?, img = ?, isOther = ? WHERE id = ?`
+        params = [name, img, isOther, id];
+    }
+    else {
+        query = `UPDATE Brands SET name = ?, isOther = ? WHERE id = ?`
+        params = [name, isOther, id];
+    }
+    
 
     await db.run(query, params);
     await db.close();
@@ -224,7 +261,7 @@ async function postConsole(req, res) {
 
     let db = await getDBConnection();
 
-    let query, params
+    let query, params;
 
     query = `INSERT INTO Consoles (name, brand, isCollectible) VALUES (?, ?, ?)`;
     params = [name, brand, isCollectible];
@@ -281,12 +318,70 @@ async function deleteConsole(id) {
 }
 
 //Products
-async function postProduct() {
-    
+async function postProduct(req, res) {
+    console.log(req.body);
+
+    const name = req.body.name;
+    const brand = req.body.brand;
+    const price = parseFloat(req.body.price);
+    const productType = req.body.productType;
+    const description = req.body.description;
+    const condition = req.body.condition;
+    const inStock = req.body.inStock === '1' ? 1 : 0;
+
+    let db = await getDBConnection();
+
+    let query, params;
+    query = `INSERT INTO Products (name, brand, price, productType, description, condition, inStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    params = [name, brand, price, productType, description, condition, inStock]
+
+    const result = await db.run(query, params)
+    const id = result.lastID;
+
+    if (req.file) {
+        const img = `${id}${path.extname(req.file.filename)}`;
+
+        query = `UPDATE Products SET img = ? WHERE is = ?`;
+        params = [img, id];
+
+        await db.run(query, params);
+    }
+
+    await db.close();
+    return id;
 }
 
-async function putProduct(id) {
-    
+async function putProduct(req, res) {
+    console.log(req.body);
+
+    const id = req.params.id
+    const name = req.body.name;
+    const brand = req.body.brand;
+    const price = parseFloat(req.body.price);
+    const productType = req.body.productType;
+    const description = req.body.description;
+    const condition = req.body.condition;
+    const inStock = req.body.inStock === '1' ? 1 : 0;
+
+    let img = '';
+    if (req.file) {
+        img = `${id}${path.extname(req.file.filename)}`;
+    }
+
+    let db = await getDBConnection();
+
+    let query, params;
+    if (img) {
+        query = `UPDATE Products SET (name = ?, brand = ?, price = ?, productType = ?, description = ?, condition = ?, inStock = ?, img = ? WHERE id = ?`;
+        params = [name, brand, price, productType, description, condition, inStock, img, id]
+    }
+    else {
+        query = `UPDATE Products SET (name = ?, brand = ?, price = ?, productType = ?, description = ?, condition = ?, inStock = ? WHERE id = ?`;
+        params = [name, brand, price, productType, description, condition, inStock, id]
+    }
+
+    await db.run(query, params)
+    await db.close();
 }
 
 async function deleteProduct(id) {
@@ -395,26 +490,42 @@ app.use('/api/admin', isAdmin);
 //Multer setup for image uploads
 const upload = multer({dest: '/'});
 
-const consoleImgStorage = multer.diskStorage({
-    destination: function(req, res, cb) {
-        cb(null, './uploads/consoles')
-    },
-    filename: function (req, file, cb) {
-        const ext = path.extname(file.originalname);
-        cb(null, `${crypto.randomUUID()}}${ext}`)
-    }
-})
-const uploadConsoleImg = multer({storage: consoleImgStorage});
+function uploadImg(type) {
+    return multer({
+        storage: multer.diskStorage({
+            destination: function(req, res, cb) {
+                cb(null, `./uploads/${type}`)
+            },
+            filename: function (req, file, cb) {
+                const ext = path.extname(file.originalname);
+                cb(null, `${crypto.randomUUID()}}${ext}`)
+            }
+        })
+    }).single('imageFile')
+}
 
 //Brand Admin Routes
-app.post('/api/admin/brand', postBrand);
+app.post('/api/admin/brand', uploadImg('brands'), async function (req, res) {
+    console.log(req.body);
+    try {
+        let id = await postBrand(req, res);
+        if (req.file) {
+            await fs.rename(req.file.path, `./uploads/brands/${id}${path.extname(req.file.filename)}`);
+        }
+        res.status(200).json({ ok: true });
+    }
+    catch (e) { 
+        console.error(`Could not post brand ${sanitizeInput(req.params.name)}: `, e);
+        res.status(500).json({ error: `Could not post brand ${sanitizeInput(req.params.name)}` });
+    }
+});
 
-app.put('/api/admin/brand/:id', upload.none(), async function (req, res) {
+app.put('/api/admin/brand/:id', uploadImg('brands'), async function (req, res) {
     console.log(req.body);
     try {
         await putBrand(req, res);
         if (req.file) {
-            
+            await fs.rename(req.file.path, `./uploads/brands/${req.params.id}${path.extname(req.file.filename)}`);
         }
         res.status(200).json({ ok: true });
     }
@@ -427,7 +538,7 @@ app.put('/api/admin/brand/:id', upload.none(), async function (req, res) {
 app.delete('/api/admin/brand/:id', deleteBrand);
 
 //Console Admin Routes
-app.post('/api/admin/console', uploadConsoleImg.single('imageFile'), async function (req, res) {
+app.post('/api/admin/console', uploadImg('consoles'), async function (req, res) {
     console.log(req.body)
     try {
         let id = await postConsole(req, res);
@@ -442,7 +553,7 @@ app.post('/api/admin/console', uploadConsoleImg.single('imageFile'), async funct
     }
 });
 
-app.put('/api/admin/console/:id', uploadConsoleImg.single('imageFile'), async function (req, res) {
+app.put('/api/admin/console/:id', uploadImg('consoles'), async function (req, res) {
     console.log(req.body)
     try {
         await putConsole(req, res);

@@ -13,7 +13,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         id: -1,
         name: '',
         brand: '',
-        brandId: '',
+        brandId: -1,
         img: '',
         isCollectible: 0
     });
@@ -54,7 +54,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
     }
 
     function validConsole () {
-        if (consoleFormValues.name !== '' && consoleFormValues.brandId !== '') {
+        if (consoleFormValues.name !== '' && consoleFormValues.brandId !== -1) {
             return true;
         }
         else {
@@ -83,7 +83,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
             id: -1,
             name: '',
             brand: '',
-            brandId: '',
+            brandId: -1,
             img: '',
             isCollectible: 0
         });
@@ -95,8 +95,8 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
         const formData = new FormData();
 
         formData.append('name', consoleFormValues.name);
-        formData.append('brand', consoleFormValues.brandId);
-        formData.append('img', consoleFormValues.img);
+        formData.append('brand', String(consoleFormValues.brandId));
+        
         if (file) {
             formData.append('imageFile', file);
         };
@@ -157,7 +157,7 @@ const ConsoleForm: FC<ConsoleFormProps> = () => {
                                 <Form.Select value={consoleFormValues.brandId}
                                     onChange = {e => setConsoleFormValues(c => ({
                                             ...c,
-                                            brandId: e.target.value
+                                            brandId: parseInt(e.target.value)
                                         }))
                                     }>
                                     <option value=''>Select Brand...</option>
