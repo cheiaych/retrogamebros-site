@@ -6,9 +6,9 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import multer from 'multer';
 import fs from 'fs/promises';
-
-import { open } from 'sqlite'
-import sqlite3 from 'sqlite3'
+import cors from 'cors';
+import { open } from 'sqlite';
+import sqlite3 from 'sqlite3';
 
 const app = express();
 
@@ -24,6 +24,13 @@ async function getDBConnection() {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'https://www.retrogamebros.ca'
+    ],
+    credentials: true
+}))
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'default-secret', // must be a string
