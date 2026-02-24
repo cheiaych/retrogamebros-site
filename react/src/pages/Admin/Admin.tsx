@@ -75,7 +75,7 @@ function Admin () {
             )}
             {authorized && (
                 <div className="Admin">
-                    <ConsoleForm></ConsoleForm>
+                    <ProductForm></ProductForm>
                 </div>
             )}
         </>

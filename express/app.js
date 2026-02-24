@@ -43,13 +43,25 @@ async function getAllBrands(req, res) {
 async function getAllConsoles(req, res) {
     let db = await getDBConnection();
 
-    let query = 'SELECT c.id, c.name, b.name as brand, b.id AS brandId, c.img, c.isCollectible ';
+    let query = 'SELECT c.id, c.name, b.name AS brand, b.id AS brandId, c.img, c.isCollectible ';
     query += 'FROM Consoles AS c JOIN Brands AS b ON c.brand = b.id ';
     query += 'ORDER BY c.brand, c.id';
 
     let consoles = await db.all(query);
     await db.close();
     return res.json(consoles);
+}
+
+async function getAllProducts(req, res) {
+    let db = await getDBConnection();
+
+    let query = 'SELECT p.id, p.name, p.price, b.name AS brand, b.id AS brandId, c.name AS console, c.id AS consoleId, p.productType, p.description, p.condition, p.inStock, p.img ';
+    query += 'FROM Products AS p JOIN Brands AS b ON p.brand = b.id ';
+    query += 'JOIN Consoles AS c ON p.console = c.id '
+
+    let products = await db.all(query);
+    await db.close();
+    return res.json(products);
 }
 
 async function getConsolesByBrand(req, res) {
@@ -109,13 +121,6 @@ async function getProductsByConsole(req, res) {
     let products = await db.all(query, params);
     await db.close()
     return res.json(products)
-}
-
-async function getAllProducts(req, res) {
-    let db = await getDBConnection();
-    let products = await db.all('SELECT * FROM Products');
-    await db.close();
-    return res.json(products);
 }
 
 async function getProductsByConditions(req, res) {
@@ -323,6 +328,7 @@ async function postProduct(req, res) {
 
     const name = req.body.name;
     const brand = req.body.brand;
+    const con = req.body.console;
     const price = parseFloat(req.body.price);
     const productType = req.body.productType;
     const description = req.body.description;
@@ -332,8 +338,8 @@ async function postProduct(req, res) {
     let db = await getDBConnection();
 
     let query, params;
-    query = `INSERT INTO Products (name, brand, price, productType, description, condition, inStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    params = [name, brand, price, productType, description, condition, inStock]
+    query = `INSERT INTO Products (name, brand, console, price, productType, description, condition, inStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    params = [name, brand, con, price, productType, description, condition, inStock]
 
     const result = await db.run(query, params)
     const id = result.lastID;
@@ -341,7 +347,7 @@ async function postProduct(req, res) {
     if (req.file) {
         const img = `${id}${path.extname(req.file.filename)}`;
 
-        query = `UPDATE Products SET img = ? WHERE is = ?`;
+        query = `UPDATE Products SET img = ? WHERE id = ?`;
         params = [img, id];
 
         await db.run(query, params);
@@ -352,11 +358,14 @@ async function postProduct(req, res) {
 }
 
 async function putProduct(req, res) {
+    console.log('PRODUCT PUT')
+    console.log(req.params);
     console.log(req.body);
 
     const id = req.params.id
     const name = req.body.name;
     const brand = req.body.brand;
+    const console = req.body.console;
     const price = parseFloat(req.body.price);
     const productType = req.body.productType;
     const description = req.body.description;
@@ -372,12 +381,12 @@ async function putProduct(req, res) {
 
     let query, params;
     if (img) {
-        query = `UPDATE Products SET (name = ?, brand = ?, price = ?, productType = ?, description = ?, condition = ?, inStock = ?, img = ? WHERE id = ?`;
-        params = [name, brand, price, productType, description, condition, inStock, img, id]
+        query = `UPDATE Products SET name = ?, brand = ?, console = ?, price = ?, productType = ?, description = ?, condition = ?, inStock = ?, img = ? WHERE id = ?`;
+        params = [name, brand, console, price, productType, description, condition, inStock, img, id]
     }
     else {
-        query = `UPDATE Products SET (name = ?, brand = ?, price = ?, productType = ?, description = ?, condition = ?, inStock = ? WHERE id = ?`;
-        params = [name, brand, price, productType, description, condition, inStock, id]
+        query = `UPDATE Products SET name = ?, brand = ?, console = ?, price = ?, productType = ?, description = ?, condition = ?, inStock = ? WHERE id = ?`;
+        params = [name, brand, console, price, productType, description, condition, inStock, id]
     }
 
     await db.run(query, params)
@@ -430,6 +439,16 @@ app.get('/api/consoles', async function (req, res){
     }
 })
 
+app.get('/api/products', async function (req, res){
+    try {
+        await getAllProducts(req, res);
+    }
+    catch (e) {
+        console.error('Could not fetch products: ', e);
+        res.status(500).json({ error: 'Could not fetch products' });
+    }
+})
+
 app.get('/api/:brand', async function (req, res){
     try {
         await getConsolesByBrand(req, res);
@@ -472,9 +491,10 @@ app.post('/admin/login', async (req, res) => {
     if (!isPassword) {
         res.status(403).json({ error: 'Forbidden' })
     }
-
-    req.session.isAdmin = true;
-    res.json({ success: true })
+    else {
+        req.session.isAdmin = true;
+        res.json({ success: true })
+    }
 });
 
 function isAdmin (req, res, next) {
@@ -571,8 +591,36 @@ app.put('/api/admin/console/:id', uploadImg('consoles'), async function (req, re
 app.delete('/api/admin/console/:id', deleteConsole);
 
 //Product Admin Routes
-app.post('/api/admin/product', putProduct);
-app.put('/api/admin/product/:id', postProduct);
+app.post('/api/admin/product', uploadImg('products'), async function (req, res) {
+    console.log(req.body);
+    try {
+        let id = await postProduct(req, res);
+        if (req.file) {
+            await fs.rename(req.file.path, `./uploads/products/${id}${path.extname(req.file.filename)}`);
+        }
+        res.status(200).json({ ok: true });
+    }
+    catch (e) {
+        console.error(`Could not post product ${sanitizeInput(req.params.name)}: `, e);
+        res.status(500).json({ error: `Could not post product ${sanitizeInput(req.params.name)}`});
+    }
+});
+
+app.put('/api/admin/product/:id', uploadImg('products'), async function (req, res) {
+    console.log(req.body);
+    try {
+        await putProduct(req, res);
+        if (req.file) {
+            await fs.rename(req.file.path, `./uploads/products/${req.params.id}${path.extname(req.file.filename)}`);
+        }
+        res.status(200).json({ ok: true });
+    }
+    catch (e) {
+        console.error(`Could not update product ${sanitizeInput(req.params.name)}: `, e);
+        res.status(500).json({ error: `Could not update product ${sanitizeInput(req.params.name)}`});
+    }
+});
+
 app.delete('/api/admin/product/:id', deleteProduct);
 
 //React site and asset route handling

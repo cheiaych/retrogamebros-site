@@ -7,9 +7,9 @@ interface Product {
   name: string; 
   price: number; 
   brand: string;
-  brandId: string;
+  brandId: number;
   console: string; 
-  consoleId: string;
+  consoleId: number;
   productType: string; 
   description: string; 
   condition: string; 
@@ -34,7 +34,7 @@ const Product: FC<ProductProps> = ({product}) => (
     {product.img && (
       <Row className='pt-3 pb-5'>
         <Col className='text-center'>
-          <Image className='img-fluid' style={{ maxHeight: '40vh'}} src={`/uploads/products/${product.brand.toLowerCase()}/${product.img}`}></Image>
+          <Image className='img-fluid' style={{ maxHeight: '40vh'}} src={`/uploads/products/${product.img}`}></Image>
         </Col>
       </Row>)}
   </Container>
