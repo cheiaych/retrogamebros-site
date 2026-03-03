@@ -30,9 +30,11 @@ const ProductForm: FC<ProductFormProps> = () => {
     let [file, setFile] = useState<File | null>(null);
     const fileRef = useRef<HTMLInputElement | null>(null);
 
+    let [query, setQuery] = useState("");
+
     async function fetchProducts() {
-        console.log(`/api/products`);
-        await fetch(`/api/products`)
+        console.log(`/api/search?name=${query}`);
+        await fetch(`/api/search?name=${query}`)
             .then((res) => res.json())
             .then((data) => {
                 console.log(data);
@@ -163,6 +165,19 @@ const ProductForm: FC<ProductFormProps> = () => {
     function printProduct () {
         console.log (productFormValues)
     }
+
+    const filterProducts = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setQuery(value)
+        
+    }
+
+    useEffect(() => {
+        console.log(query)
+        if (query.length > 3) {
+            fetchProducts();
+        }
+    }, [query])
 
     return (
         <>
@@ -314,48 +329,61 @@ const ProductForm: FC<ProductFormProps> = () => {
                     </Container>
                 </Col>
 
-                <Col size={9} style={{maxHeight: '70vh', overflowY: 'auto'}}>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th><b>Product</b></th>
-                                <th><b>Price</b></th>
-                                <th><b>Brand</b></th>
-                                <th><b>Console</b></th>
-                                <th><b>Category</b></th>
-                                <th><b>Condition</b></th>
-                                <th><b>In Stock?</b></th>
-                                <th><b>Image</b></th>
-                                <th><b>Description</b></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {products.map((p) => (
-                            <tr 
-                            key={p.id.toString()} 
-                            onClick={() => {
-                                setSelectedProduct(p.id)
-                                loadProduct(p)
-                            }}
-                            style={{height: '40px', justifyContent: 'center'}}
-                            className={selectedProduct === p.id ? 'table-active' : ''}>
-                                <td>{p.name}</td>
-                                <td>{p.price}</td>
-                                <td>{p.brand}</td>
-                                <td>{p.console}</td>
-                                <td>{p.productType}</td>
-                                <td>{p.condition}</td>
-                                <td>{p.inStock === 1 ? 'Yes' : 'No' }</td>
-                                <td>{p.img? (
-                                    <Image className='img-fluid' style={{ height: '30px'}} src={`/uploads/products/${p.img}?${crypto.randomUUID()}`}></Image>
-                                ) : (
-                                    <div style={{ width: '30px', height: '30px' }}></div>
-                                )}</td>
-                                <td>{p.description}</td>
-                            </tr>  
-                        ))}
-                        </tbody>
-                    </Table>
+                <Col size={9}>
+                    <Row>
+                        <Form.Control
+                            name='search' 
+                            type='text'
+                            autoComplete='off'
+                            style={{width: '60%'}} 
+                            placeholder='Search Products...' 
+                            value={query}
+                            onChange={filterProducts}>
+                        </Form.Control>
+                    </Row>
+                    <Row style={{maxHeight: '70vh', overflowY: 'auto'}}>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th><b>Product</b></th>
+                                    <th><b>Price</b></th>
+                                    <th><b>Brand</b></th>
+                                    <th><b>Console</b></th>
+                                    <th><b>Category</b></th>
+                                    <th><b>Condition</b></th>
+                                    <th><b>In Stock?</b></th>
+                                    <th><b>Image</b></th>
+                                    <th><b>Description</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {products.map((p) => (
+                                <tr 
+                                key={p.id.toString()} 
+                                onClick={() => {
+                                    setSelectedProduct(p.id)
+                                    loadProduct(p)
+                                }}
+                                style={{height: '40px', justifyContent: 'center'}}
+                                className={selectedProduct === p.id ? 'table-active' : ''}>
+                                    <td>{p.name}</td>
+                                    <td>{p.price}</td>
+                                    <td>{p.brand}</td>
+                                    <td>{p.console}</td>
+                                    <td>{p.productType}</td>
+                                    <td>{p.condition}</td>
+                                    <td>{p.inStock === 1 ? 'Yes' : 'No' }</td>
+                                    <td>{p.img? (
+                                        <Image className='img-fluid' style={{ height: '30px'}} src={`/uploads/products/${p.img}?${crypto.randomUUID()}`}></Image>
+                                    ) : (
+                                        <div style={{ width: '30px', height: '30px' }}></div>
+                                    )}</td>
+                                    <td>{p.description}</td>
+                                </tr>  
+                            ))}
+                            </tbody>
+                        </Table>
+                    </Row>
                 </Col>
             </Row>
         </>

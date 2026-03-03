@@ -61,11 +61,11 @@ const TopNavbar: FC<NavbarProps> = () => {
             <Col>
               <InputGroup>
                 <Form.Control
-                name='search' 
-                type='text' 
-                autoComplete='off'
-                placeholder='Search'
-                className={styles.searchinput}>  
+                  name='search' 
+                  type='text' 
+                  autoComplete='off'
+                  placeholder='Search...'
+                  className={styles.searchinput}>  
                 </Form.Control>
                 <Button type='submit' className={styles.searchbutton}>Search</Button>
               </InputGroup>

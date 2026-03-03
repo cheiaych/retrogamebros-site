@@ -134,7 +134,7 @@ async function getProductsByConditions(req, res) {
     //const { brand, console, productType } = req.query;
 
     const brand = sanitizeInput(req.query.brand);
-    const console = sanitizeInput(req.query.console);
+    const con = sanitizeInput(req.query.console);
     const productType = sanitizeInput(req.query.productType)
     
     let db = await getDBConnection();
@@ -147,9 +147,9 @@ async function getProductsByConditions(req, res) {
         conditions.push('brand = ?');
         params.push(brand);
     }
-    if (console) {
+    if (con) {
         conditions.push('console = ?');
-        params.push(console);
+        params.push(con);
     }
     if (productType) {
         conditions.push('productType = ?');
@@ -372,7 +372,7 @@ async function putProduct(req, res) {
     const id = req.params.id
     const name = req.body.name;
     const brand = req.body.brand;
-    const console = req.body.console;
+    const con = req.body.console;
     const price = parseFloat(req.body.price);
     const productType = req.body.productType;
     const description = req.body.description;
@@ -389,11 +389,11 @@ async function putProduct(req, res) {
     let query, params;
     if (img) {
         query = `UPDATE Products SET name = ?, brand = ?, console = ?, price = ?, productType = ?, description = ?, condition = ?, inStock = ?, img = ? WHERE id = ?`;
-        params = [name, brand, console, price, productType, description, condition, inStock, img, id]
+        params = [name, brand, con, price, productType, description, condition, inStock, img, id]
     }
     else {
         query = `UPDATE Products SET name = ?, brand = ?, console = ?, price = ?, productType = ?, description = ?, condition = ?, inStock = ? WHERE id = ?`;
-        params = [name, brand, console, price, productType, description, condition, inStock, id]
+        params = [name, brand, con, price, productType, description, condition, inStock, id]
     }
 
     await db.run(query, params)
@@ -420,8 +420,8 @@ app.get('/api/search', async function (req, res){
         return searchProducts(req, res);
     }
     catch (e) {
-        console.error('Could not fetch search: ', e);
-        return res.status(500).json({ error: 'Could not fetch brands' });
+        console.error(`Could not fetch products for search ${sanitizeInput(req.query.name)}: `, e);
+        res.status(500).json({ error: `Could not fetch products for search ${sanitizeInput(req.query.name)}` });
     }
 })
 
@@ -431,8 +431,8 @@ app.get('/api/brands', async function (req, res){
         await getAllBrands(req, res);
     }
     catch (e) {
-        console.error(`Could not fetch products for search ${sanitizeInput(req.query.name)}: `, e);
-        res.status(500).json({ error: `Could not fetch products for search ${sanitizeInput(req.query.name)}` });
+        console.error(`Could not fetch brands`, e);
+        res.status(500).json({ error: `Could not fetch brands` });
     }
 })
 
